@@ -53,14 +53,22 @@
             filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.9));
         }
 
-        /* Strict A5 Page Ratio Container (148mm x 210mm) for 100% 1-Page PDF Fit */
+        /* Fixed Canvas Dimensions for 100% 1-Page A5 PDF Export (559px x 794px @ 96DPI) */
         .pdf-page-container {
-            width: 148mm;
-            height: 210mm;
-            max-width: 100%;
+            width: 559px;
+            height: 794px;
             box-sizing: border-box;
             overflow: hidden;
             margin: 0 auto;
+        }
+
+        /* Responsive Wrapper for Mobile Devices */
+        .ticket-scroll-container {
+            width: 100%;
+            overflow-x: auto;
+            display: flex;
+            justify-content: center;
+            padding-bottom: 10px;
         }
     </style>
 </head>
@@ -163,7 +171,7 @@
                         <p class="text-slate-500 font-semibold">Complete el formulario para generar la boleta e iniciar la descarga automática.</p>
                     </div>
 
-                    <!-- Ticket Graphic Element (Exact 148mm x 210mm Printable Target for PDF) -->
+                    <!-- Ticket Graphic Element (Fixed A5 Dimension Wrapper for Mobile/Desktop) -->
                     <div id="ticketSuccessWrapper" class="hidden w-full flex flex-col items-center space-y-4">
                         <div id="pdfDownloadNotice" class="w-full max-w-lg bg-green-950/90 border border-green-600 text-green-200 p-4 rounded-xl text-center text-sm font-semibold flex items-center justify-between shadow-xl">
                             <span class="flex items-center gap-2">
@@ -175,80 +183,83 @@
                             </button>
                         </div>
 
-                        <!-- Ticket Box Container (Exact A5 Dimensions to fit 1 page completely) -->
-                        <div id="ticketToPrint" class="pdf-page-container ticket-bg gold-border text-white p-5 rounded-3xl shadow-2xl relative overflow-hidden flex flex-col justify-between">
-                            
-                            <!-- Top Glow Accent -->
-                            <div class="absolute -top-16 -right-16 w-48 h-48 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none"></div>
-                            
-                            <!-- Header Logo & Name -->
-                            <div class="text-center border-b-2 border-yellow-500/30 pb-3 mb-2 relative">
-                                <img src="https://i.imgur.com/crEnZHt.png" class="w-20 h-20 rounded-full border-3 border-yellow-500 mx-auto mb-1.5 shadow-2xl object-cover" alt="Sánchez Logo">
-                                <h3 class="font-black text-xl tracking-wider text-white uppercase drop-shadow">SANCHEZ'S SPORT BAR</h3>
-                                <p class="text-[11px] text-yellow-400 font-black uppercase tracking-widest mt-0.5">BOLIRANA & CERVECERÍA</p>
-                            </div>
+                        <!-- Responsive Scroll Container for Mobile Screens -->
+                        <div class="ticket-scroll-container">
+                            <!-- Ticket Box Container (Exact Fixed A5 Dimensions: 559px x 794px) -->
+                            <div id="ticketToPrint" class="pdf-page-container ticket-bg gold-border text-white p-6 rounded-3xl shadow-2xl relative overflow-hidden flex flex-col justify-between shrink-0">
+                                
+                                <!-- Top Glow Accent -->
+                                <div class="absolute -top-16 -right-16 w-48 h-48 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                                
+                                <!-- Header Logo & Name -->
+                                <div class="text-center border-b-2 border-yellow-500/30 pb-3 mb-2 relative">
+                                    <img src="https://i.imgur.com/crEnZHt.png" class="w-24 h-24 rounded-full border-4 border-yellow-500 mx-auto mb-2 shadow-2xl object-cover" alt="Sánchez Logo">
+                                    <h3 class="font-black text-2xl tracking-wider text-white uppercase drop-shadow">SANCHEZ'S SPORT BAR</h3>
+                                    <p class="text-xs text-yellow-400 font-black uppercase tracking-widest mt-0.5">BOLIRANA & CERVECERÍA</p>
+                                </div>
 
-                            <!-- Event Title Banner with Flag Gradient -->
-                            <div class="text-center my-2 bg-gradient-to-r from-red-950/60 via-slate-900/90 to-blue-950/60 p-3 rounded-2xl border-2 border-yellow-500/50 shadow-inner">
-                                <p class="text-xs text-yellow-400 uppercase font-black tracking-widest mb-0.5">FIESTA</p>
-                                <h2 class="text-3xl font-black uppercase tracking-wider drop-shadow-lg text-vzla-flag py-0.5">
-                                    VENEZOLANA
-                                </h2>
-                                <p class="text-[11px] text-slate-300 italic font-semibold mt-0.5">"Que suene nuestra tierra ¡Y que viva nuestra gente!"</p>
-                            </div>
+                                <!-- Event Title Banner with Flag Gradient -->
+                                <div class="text-center my-2 bg-gradient-to-r from-red-950/60 via-slate-900/90 to-blue-950/60 p-3.5 rounded-2xl border-2 border-yellow-500/50 shadow-inner">
+                                    <p class="text-xs text-yellow-400 uppercase font-black tracking-widest mb-0.5">FIESTA</p>
+                                    <h2 class="text-4xl font-black uppercase tracking-wider drop-shadow-lg text-vzla-flag py-0.5">
+                                        VENEZOLANA
+                                    </h2>
+                                    <p class="text-xs text-slate-300 italic font-semibold mt-1">"Que suene nuestra tierra ¡Y que viva nuestra gente!"</p>
+                                </div>
 
-                            <div class="bg-slate-900/95 rounded-2xl p-3.5 my-2 border border-slate-700/80 space-y-2.5 text-xs shadow-md">
-                                <div class="flex justify-between items-center border-b border-slate-800 pb-1.5">
-                                    <span class="text-slate-400 font-bold uppercase text-[11px]">TITULAR:</span>
-                                    <span id="previewNombre" class="font-black text-yellow-400 uppercase text-sm tracking-wide">--</span>
+                                <div class="bg-slate-900/95 rounded-2xl p-4 my-2 border border-slate-700/80 space-y-3 text-sm shadow-md">
+                                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                                        <span class="text-slate-400 font-bold uppercase text-xs">TITULAR:</span>
+                                        <span id="previewNombre" class="font-black text-yellow-400 uppercase text-base tracking-wide">--</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                                        <span class="text-slate-400 font-bold uppercase text-xs">CELULAR:</span>
+                                        <span id="previewCelular" class="font-extrabold text-white text-sm">--</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                                        <span class="text-slate-400 font-bold uppercase text-xs">ENTRADA:</span>
+                                        <span class="font-bold text-green-400 text-sm">Cupo por Pareja</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-slate-400 font-bold uppercase text-xs">CÓDIGO ID:</span>
+                                        <span id="previewCodigo" class="font-mono font-black text-yellow-400 text-sm bg-yellow-950/80 px-3 py-1 rounded-lg border border-yellow-600/50 tracking-wider">--</span>
+                                    </div>
                                 </div>
-                                <div class="flex justify-between items-center border-b border-slate-800 pb-1.5">
-                                    <span class="text-slate-400 font-bold uppercase text-[11px]">CELULAR:</span>
-                                    <span id="previewCelular" class="font-extrabold text-white text-xs">--</span>
-                                </div>
-                                <div class="flex justify-between items-center border-b border-slate-800 pb-1.5">
-                                    <span class="text-slate-400 font-bold uppercase text-[11px]">ENTRADA:</span>
-                                    <span class="font-bold text-green-400 text-xs">Cupo por Pareja</span>
-                                </div>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-slate-400 font-bold uppercase text-[11px]">CÓDIGO ID:</span>
-                                    <span id="previewCodigo" class="font-mono font-black text-yellow-400 text-xs bg-yellow-950/80 px-2.5 py-0.5 rounded-lg border border-yellow-600/50 tracking-wider">--</span>
-                                </div>
-                            </div>
 
-                            <!-- Event Info & Enriched QR Code -->
-                            <div class="flex items-center justify-between bg-black/70 p-3.5 rounded-2xl border-2 border-yellow-500/40 my-2 shadow-lg">
-                                <div class="space-y-1.5 text-xs text-slate-200">
-                                    <p class="font-black text-yellow-400 flex items-center gap-1.5 text-xs">
-                                        <i class="fa-solid fa-calendar-day text-yellow-500"></i> Sábado 5 de Septiembre
+                                <!-- Event Info & Enriched QR Code -->
+                                <div class="flex items-center justify-between bg-black/70 p-4 rounded-2xl border-2 border-yellow-500/40 my-2 shadow-lg">
+                                    <div class="space-y-2 text-xs text-slate-200">
+                                        <p class="font-black text-yellow-400 flex items-center gap-2 text-xs">
+                                            <i class="fa-solid fa-calendar-day text-yellow-500 text-sm"></i> Sábado 5 de Septiembre
+                                        </p>
+                                        <p class="font-black text-white flex items-center gap-2 text-xs">
+                                            <i class="fa-solid fa-clock text-blue-400 text-sm"></i> Desde las 7:00 PM
+                                        </p>
+                                        <p class="text-slate-300 text-[11px] flex items-center gap-2 font-semibold">
+                                            <i class="fa-solid fa-wine-glass-empty text-red-500"></i> Shot de bienvenida (hasta 12 AM)
+                                        </p>
+                                        <p class="text-[11px] text-slate-400 flex items-center gap-2 font-medium">
+                                            <i class="fa-solid fa-location-dot text-yellow-500"></i> Bar Dg 30 b Bis 7 a 66 2do y 3er piso
+                                        </p>
+                                    </div>
+
+                                    <!-- Enlarged QR Display Box -->
+                                    <div class="bg-white p-2.5 rounded-xl shadow-2xl flex items-center justify-center border-2 border-yellow-500 ml-2">
+                                        <div id="previewQRCode"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Footer Clean Warning -->
+                                <div class="mt-2 text-center border-t-2 border-slate-800/80 pt-2 space-y-1">
+                                    <p class="font-black text-red-500 text-xs uppercase tracking-wider">
+                                        EVENTO EXCLUSIVO A PUERTA CERRADA
                                     </p>
-                                    <p class="font-black text-white flex items-center gap-1.5 text-[11px]">
-                                        <i class="fa-solid fa-clock text-blue-400"></i> Desde las 7:00 PM
-                                    </p>
-                                    <p class="text-slate-300 text-[10px] flex items-center gap-1.5 font-semibold">
-                                        <i class="fa-solid fa-wine-glass-empty text-red-500"></i> Shot de bienvenida (hasta 12 AM)
-                                    </p>
-                                    <p class="text-[10px] text-slate-400 flex items-center gap-1.5 font-medium">
-                                        <i class="fa-solid fa-location-dot text-yellow-500"></i> Bar Dg 30 b Bis 7 a 66 2do y 3er piso
+                                    <p class="text-[10px] text-slate-400 font-semibold">
+                                        Presente este código QR digital o impreso al ingresar.
                                     </p>
                                 </div>
 
-                                <!-- Enlarged QR Display Box -->
-                                <div class="bg-white p-2 rounded-xl shadow-2xl flex items-center justify-center border-2 border-yellow-500 ml-2">
-                                    <div id="previewQRCode"></div>
-                                </div>
                             </div>
-
-                            <!-- Footer Clean Warning -->
-                            <div class="mt-2 text-center border-t-2 border-slate-800/80 pt-2 space-y-0.5">
-                                <p class="font-black text-red-500 text-xs uppercase tracking-wider">
-                                    EVENTO EXCLUSIVO A PUERTA CERRADA
-                                </p>
-                                <p class="text-[9px] text-slate-400 font-semibold">
-                                    Presente este código QR digital o impreso al ingresar.
-                                </p>
-                            </div>
-
                         </div>
                     </div>
                 </div>
@@ -256,6 +267,7 @@
             </div>
         </section>
 
+        <!-- TAB 2: BASE DE DATOS -->
         <section id="sec-database" class="hidden space-y-6">
             
             <!-- Dashboard Stats -->
@@ -317,6 +329,7 @@
             </div>
         </section>
 
+        <!-- TAB 3: VALIDAR INGRESO (SCANNER) -->
         <section id="sec-scanner" class="hidden space-y-6 max-w-2xl mx-auto">
             <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl text-center">
                 <h2 class="text-xl font-black text-yellow-500 mb-1 flex items-center justify-center gap-2">
@@ -584,13 +597,13 @@
             document.getElementById('previewCelular').textContent = ticket.celular || '--';
             document.getElementById('previewCodigo').textContent = ticket.id || '--';
 
-            // Render Enriched QR Code (125x125)
+            // Render Enriched QR Code (130x130)
             const qrContainer = document.getElementById('previewQRCode');
             qrContainer.innerHTML = '';
             new QRCode(qrContainer, {
                 text: ticket.id || '',
-                width: 125,
-                height: 125,
+                width: 130,
+                height: 130,
                 colorDark: "#000000",
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
@@ -613,7 +626,14 @@
                 margin: 0,
                 filename: `Boleta_${safeId}_${safeNombre}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, logging: false, scrollX: 0, scrollY: 0 },
+                html2canvas: { 
+                    scale: 2, 
+                    useCORS: true, 
+                    logging: false, 
+                    scrollX: 0, 
+                    scrollY: 0,
+                    windowWidth: 600
+                },
                 jsPDF: { unit: 'mm', format: 'a5', orientation: 'portrait' },
                 pagebreak: { mode: 'avoid-all' }
             };
@@ -769,7 +789,6 @@
             initCloud();
         };
 
-        // QR Scanner Operations
         window.startScanner = function() {
             document.getElementById('btnStartScanner').classList.add('hidden');
             document.getElementById('btnStopScanner').classList.remove('hidden');
