@@ -164,7 +164,7 @@
                         </div>
 
                         <button type="submit" id="btn-generar" class="w-full mt-2 bg-[#dc2626] hover:bg-red-700 text-white font-bold py-4 px-4 rounded-lg transition-colors flex justify-center items-center gap-2 shadow-lg shadow-red-900/20 text-sm uppercase">
-                            <i class="fa-solid fa-ticket-simple text-lg"></i> Generar Ticket
+                            <i class="fa-solid fa-ticket-simple text-lg"></i> Generar Ticket Doble
                         </button>
                     </form>
                 </div>
@@ -172,8 +172,8 @@
                 <!-- Preview del Ticket en Pantalla -->
                 <div class="lg:col-span-7 flex flex-col items-center justify-start relative min-h-[500px] overflow-hidden p-4">
                     <div id="empty-ticket-state" class="absolute inset-0 border-2 border-dashed border-[#1f2937] rounded-2xl flex flex-col items-center justify-center text-gray-500 p-4 text-center m-4">
-                        <i class="fa-solid fa-ticket text-5xl mb-4 opacity-50"></i>
-                        <p class="text-sm font-medium">Complete el formulario para generar la boleta aquí.</p>
+                        <i class="fa-solid fa-qrcode text-5xl mb-4 opacity-50"></i>
+                        <p class="text-sm font-medium">Complete el formulario para generar la boleta doble aquí.</p>
                     </div>
 
                     <div id="ticket-preview-container" class="z-10 w-full flex flex-col items-center hidden transform scale-90 sm:scale-100 origin-top">
@@ -185,7 +185,6 @@
                                 Sanchez's Sport Bar<br>Bolirana & Cervecería
                             </h2>
 
-                            <!-- Título Principal (CORRECCIÓN HTML2CANVAS: SIN DEGRADADOS CSS, LETRAS INDIVIDUALES) -->
                             <div class="mb-3">
                                 <h1 class="text-4xl font-black uppercase tracking-widest text-white drop-shadow-md mb-1">Fiesta</h1>
                                 <h1 class="text-4xl font-black uppercase tracking-tighter drop-shadow-md">
@@ -198,14 +197,14 @@
                             </p>
 
                             <!-- Fechas y Detalles -->
-                            <div class="space-y-1 mb-5">
+                            <div class="space-y-1 mb-4">
                                 <p class="font-bold text-sm text-white">Sábado 5 de Septiembre</p>
                                 <p class="font-bold text-sm text-white">Desde las 7:00 PM</p>
                                 <p class="text-[11px] text-gray-400">Cóctel de bienvenida (hasta 12 AM)</p>
                             </div>
 
                             <!-- Información del Titular -->
-                            <div class="w-full bg-[#111827] border border-[#1f2937] rounded-xl p-4 text-left mb-5">
+                            <div class="w-full bg-[#111827] border border-[#1f2937] rounded-xl p-4 text-left mb-4">
                                 <div class="grid grid-cols-1 gap-2 text-xs">
                                     <div class="flex justify-between border-b border-[#1f2937] pb-1">
                                         <span class="text-gray-400 font-bold uppercase text-[10px]">Titular:</span>
@@ -226,9 +225,16 @@
                                 </div>
                             </div>
 
-                            <!-- QR -->
-                            <div class="bg-white p-2 rounded-xl mb-4">
-                                <div id="preview-qrcode" class="w-32 h-32"></div>
+                            <!-- DOBLE QR PREVIEW -->
+                            <div class="flex justify-center gap-4 mb-4 w-full px-2">
+                                <div class="bg-white p-2 rounded-xl flex-1 flex flex-col items-center justify-center">
+                                    <div id="preview-qrcode-1" class="w-20 h-20 mb-1"></div>
+                                    <p class="text-[9px] text-black font-black uppercase">Persona 1</p>
+                                </div>
+                                <div class="bg-white p-2 rounded-xl flex-1 flex flex-col items-center justify-center">
+                                    <div id="preview-qrcode-2" class="w-20 h-20 mb-1"></div>
+                                    <p class="text-[9px] text-black font-black uppercase">Persona 2</p>
+                                </div>
                             </div>
 
                             <!-- Footer -->
@@ -253,15 +259,15 @@
         <section id="db" class="tab-content">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
                 <div class="bg-[#111827] border border-[#1f2937] p-3 rounded-xl text-center sm:text-left">
-                    <p class="text-gray-400 text-[10px] font-bold uppercase">Vendidas</p>
+                    <p class="text-gray-400 text-[10px] font-bold uppercase">Boletas Vendidas</p>
                     <p class="text-xl font-black text-white mt-1" id="stat-total">0</p>
                 </div>
                 <div class="bg-[#111827] border border-[#1f2937] p-3 rounded-xl text-center sm:text-left">
-                    <p class="text-gray-400 text-[10px] font-bold uppercase">Ingresados</p>
+                    <p class="text-gray-400 text-[10px] font-bold uppercase">Cupos Ingresados</p>
                     <p class="text-xl font-black text-green-500 mt-1" id="stat-in">0</p>
                 </div>
                 <div class="bg-[#111827] border border-[#1f2937] p-3 rounded-xl text-center sm:text-left">
-                    <p class="text-gray-400 text-[10px] font-bold uppercase">Pendientes</p>
+                    <p class="text-gray-400 text-[10px] font-bold uppercase">Cupos Pendientes</p>
                     <p class="text-xl font-black text-[#eab308] mt-1" id="stat-out">0</p>
                 </div>
                 <div class="bg-[#111827] border border-[#1f2937] p-3 rounded-xl text-center sm:text-left">
@@ -289,7 +295,7 @@
                                 <th class="p-4 font-bold">Titular</th>
                                 <th class="p-4 font-bold">Celular</th>
                                 <th class="p-4 font-bold">Pago</th>
-                                <th class="p-4 font-bold">Estado</th>
+                                <th class="p-4 font-bold">Estatus</th>
                                 <th class="p-4 font-bold text-right">Acciones</th>
                             </tr>
                         </thead>
@@ -308,7 +314,7 @@
         <section id="validar" class="tab-content max-w-md mx-auto">
             <div class="bg-[#111827] border border-[#1f2937] rounded-2xl p-5 shadow-xl text-center">
                 <h2 class="text-lg font-bold text-white mb-2"><i class="fa-solid fa-camera text-[#eab308] mr-2"></i> Escáner de Acceso</h2>
-                <p class="text-gray-400 text-xs mb-5">Apunta la cámara trasera al QR de la boleta o ingresa el ID manual.</p>
+                <p class="text-gray-400 text-xs mb-5">Apunta la cámara trasera al QR de la persona o ingresa el ID manual.</p>
 
                 <!-- Lector QR -->
                 <div id="reader" class="w-full rounded-xl overflow-hidden border-2 border-[#1f2937] bg-[#0a0f1d] mb-5 min-h-[250px] flex items-center justify-center relative">
@@ -319,11 +325,12 @@
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <i class="fa-solid fa-keyboard text-gray-500"></i>
                     </div>
-                    <input type="text" id="manual-id" placeholder="Ej: TKT-GPHQD4" class="w-full bg-[#0a0f1d] border border-[#1f2937] rounded-lg pl-10 pr-24 py-3 text-white focus:border-[#eab308] outline-none uppercase font-mono text-sm">
+                    <input type="text" id="manual-id" placeholder="Ej: TKT-GPHQD4-1" class="w-full bg-[#0a0f1d] border border-[#1f2937] rounded-lg pl-10 pr-24 py-3 text-white focus:border-[#eab308] outline-none uppercase font-mono text-sm">
                     <button onclick="validarManual()" class="absolute inset-y-1 right-1 bg-[#1f2937] hover:bg-gray-700 text-white px-4 rounded-md text-sm font-bold transition">
                         Validar
                     </button>
                 </div>
+                <p class="text-[10px] text-gray-500 mt-2 text-left">Para validación manual, añade <b>-1</b> o <b>-2</b> al final del código.</p>
             </div>
         </section>
 
@@ -338,7 +345,6 @@
                 Sanchez's Sport Bar<br>Bolirana & Cervecería
             </h2>
 
-            <!-- CORRECCIÓN DE TEXTO PARA EXPORTACIÓN -->
             <div class="mb-4">
                 <h1 class="text-5xl font-black uppercase tracking-widest text-white drop-shadow-md mb-1">Fiesta</h1>
                 <h1 class="text-5xl font-black uppercase tracking-tighter drop-shadow-md">
@@ -356,7 +362,7 @@
                 <p class="text-xs text-gray-400 mt-1">Cóctel de bienvenida (hasta 12 AM)</p>
             </div>
 
-            <div class="w-full bg-[#111827] border border-[#1f2937] rounded-xl p-5 text-left mb-8">
+            <div class="w-full bg-[#111827] border border-[#1f2937] rounded-xl p-5 text-left mb-6">
                 <div class="grid grid-cols-1 gap-3 text-sm">
                     <div class="flex justify-between border-b border-[#1f2937] pb-2">
                         <span class="text-gray-400 font-bold uppercase text-[11px]">Titular:</span>
@@ -377,8 +383,16 @@
                 </div>
             </div>
 
-            <div class="bg-white p-3 rounded-xl mb-6 shadow-lg inline-block">
-                <div id="ex-qrcode" class="w-36 h-36"></div>
+            <!-- DOBLE QR PARA LA IMAGEN EXPORTADA -->
+            <div class="flex justify-center gap-5 mb-5 w-full">
+                <div class="bg-white p-2 rounded-xl flex-1 flex flex-col items-center justify-center shadow-lg">
+                    <div id="ex-qrcode-1" class="w-32 h-32 mb-1"></div>
+                    <p class="text-[10px] text-black font-black uppercase">Persona 1</p>
+                </div>
+                <div class="bg-white p-2 rounded-xl flex-1 flex flex-col items-center justify-center shadow-lg">
+                    <div id="ex-qrcode-2" class="w-32 h-32 mb-1"></div>
+                    <p class="text-[10px] text-black font-black uppercase">Persona 2</p>
+                </div>
             </div>
 
             <p class="text-[11px] text-gray-300 mb-4">Bar Dg 30 b Bis 7 a 66 2do y 3er piso</p>
@@ -477,7 +491,7 @@
                 snapshot.forEach((doc) => ticketsData.push({ id: doc.id, ...doc.data() }));
                 localStorage.setItem('sanchez_tickets_backup', JSON.stringify(ticketsData));
                 
-                // Asegurarnos de mantener el filtro de búsqueda actual al actualizar
+                // Mantiene la búsqueda activa al redibujar
                 const currentSearch = document.getElementById('search-input').value;
                 renderTable(currentSearch);
                 
@@ -520,7 +534,7 @@
             activeBtn.classList.add('bg-[#dc2626]', 'text-white', 'shadow-lg');
 
             if(tabId === 'validar') {
-                isProcessingQR = false; // Liberamos cámara al entrar a la pestaña
+                isProcessingQR = false; 
                 setTimeout(() => { initScanner(); }, 250); 
             } else {
                 if (html5QrCode && html5QrCode.isScanning) {
@@ -529,14 +543,13 @@
                         html5QrCode = null;
                         document.getElementById('reader').innerHTML = '<div id="cam-loading" class="absolute text-gray-500 text-sm"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Activando Cámara Trasera...</div>';
                     }).catch(e => {
-                        console.error("Error al detener cámara:", e);
                         html5QrCode = null;
                     });
                 }
             }
         };
 
-        // 3. VENTA Y EXPORTACIÓN A JPG
+        // 3. VENTA Y EXPORTACIÓN A JPG (Doble QR)
         document.getElementById('venta-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser) return showModal("Error", "No estás conectado a la base.", "error");
@@ -551,7 +564,13 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando...';
             btn.disabled = true;
 
-            const ticketData = { nombre, celular, pago, fecha, estado: 'pendiente', creadoEn: new Date().toISOString() };
+            // Novedad: Control Individual de Ingresos
+            const ticketData = { 
+                nombre, celular, pago, fecha, 
+                ingreso1: false, ingreso2: false, 
+                horaIngreso1: null, horaIngreso2: null, 
+                creadoEn: new Date().toISOString() 
+            };
 
             try {
                 await setDoc(doc(ticketsRef, ticketId), ticketData);
@@ -563,20 +582,23 @@
                 document.getElementById('p-celular').textContent = celular;
                 document.getElementById('p-id').textContent = ticketId;
                 
-                const qrContainer = document.getElementById("preview-qrcode");
-                qrContainer.innerHTML = '';
-                new QRCode(qrContainer, { text: ticketId, width: 128, height: 128, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+                // Generar los 2 QRs en pantalla
+                document.getElementById("preview-qrcode-1").innerHTML = '';
+                new QRCode(document.getElementById("preview-qrcode-1"), { text: ticketId + '-1', width: 80, height: 80, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+                
+                document.getElementById("preview-qrcode-2").innerHTML = '';
+                new QRCode(document.getElementById("preview-qrcode-2"), { text: ticketId + '-2', width: 80, height: 80, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
 
                 document.getElementById('btn-descargar-actual').onclick = () => exportarBoletaImagen({id: ticketId, ...ticketData});
 
                 document.getElementById('venta-form').reset();
                 document.getElementById('v-fecha').valueAsDate = new Date();
-                showModal("¡Éxito!", `Ticket ${ticketId} generado. Puedes descargar la imagen JPG.`, "success");
+                showModal("¡Éxito!", `Ticket doble ${ticketId} generado. Puedes descargar la imagen JPG.`, "success");
 
             } catch (error) {
                 showModal("Error", "No se pudo guardar la boleta.", "error");
             } finally {
-                btn.innerHTML = '<i class="fa-solid fa-ticket-simple text-lg"></i> Generar Ticket';
+                btn.innerHTML = '<i class="fa-solid fa-ticket-simple text-lg"></i> Generar Ticket Doble';
                 btn.disabled = false;
             }
         });
@@ -586,9 +608,12 @@
             document.getElementById('ex-celular').textContent = ticket.celular;
             document.getElementById('ex-id').textContent = ticket.id;
 
-            const exQrcode = document.getElementById("ex-qrcode");
-            exQrcode.innerHTML = '';
-            new QRCode(exQrcode, { text: ticket.id, width: 144, height: 144, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+            // Generar los 2 QRs ocultos para captura
+            document.getElementById("ex-qrcode-1").innerHTML = '';
+            new QRCode(document.getElementById("ex-qrcode-1"), { text: ticket.id + '-1', width: 128, height: 128, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+
+            document.getElementById("ex-qrcode-2").innerHTML = '';
+            new QRCode(document.getElementById("ex-qrcode-2"), { text: ticket.id + '-2', width: 128, height: 128, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
 
             setTimeout(() => {
                 const element = document.getElementById('pdf-ticket-template');
@@ -606,7 +631,7 @@
             }, 300);
         };
 
-        // 4. DATOS Y TABLA
+        // 4. DATOS, ESTADÍSTICAS Y TABLA DE CONTROL INDIVIDUAL
         function renderTable(filterText = '') {
             ticketsTbody.innerHTML = '';
             const filtered = ticketsData.filter(t => 
@@ -626,28 +651,30 @@
             filtered.forEach(ticket => {
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-[#1f2937]/50 transition-colors';
-                const statusColor = ticket.estado === 'ingresado' ? 'text-green-400 bg-green-400/10 border-green-400/30' : 'text-yellow-400 bg-yellow-400/10 border-yellow-400/30';
-                const statusIcon = ticket.estado === 'ingresado' ? 'fa-check-circle' : 'fa-clock';
+                
+                let ingresosCount = (ticket.ingreso1 ? 1 : 0) + (ticket.ingreso2 ? 1 : 0);
+                let estadoHtml = '';
+                
+                if(ingresosCount === 0) estadoHtml = `<span class="px-2 py-1 rounded text-[10px] font-bold uppercase border border-yellow-400/30 text-yellow-400 bg-yellow-400/10 w-max"><i class="fa-solid fa-clock"></i> Pendiente 0/2</span>`;
+                else if(ingresosCount === 1) estadoHtml = `<span class="px-2 py-1 rounded text-[10px] font-bold uppercase border border-blue-400/30 text-blue-400 bg-blue-400/10 w-max"><i class="fa-solid fa-user-half"></i> Incompleta 1/2</span>`;
+                else estadoHtml = `<span class="px-2 py-1 rounded text-[10px] font-bold uppercase border border-green-400/30 text-green-400 bg-green-400/10 w-max"><i class="fa-solid fa-check-double"></i> Completa 2/2</span>`;
 
                 tr.innerHTML = `
                     <td class="p-4 font-mono text-xs text-[#eab308] font-bold">${ticket.id}</td>
                     <td class="p-4 font-medium text-white">${ticket.nombre}</td>
                     <td class="p-4 text-gray-400 text-xs">${ticket.celular}</td>
                     <td class="p-4 text-gray-400 text-xs">${ticket.pago}</td>
-                    <td class="p-4">
-                        <span class="px-2 py-1 rounded text-[10px] font-bold uppercase border flex items-center gap-1 w-max ${statusColor}">
-                            <i class="fa-solid ${statusIcon}"></i> ${ticket.estado}
-                        </span>
-                    </td>
-                    <td class="p-4 text-right whitespace-nowrap">
+                    <td class="p-4">${estadoHtml}</td>
+                    <td class="p-4 text-right whitespace-nowrap flex items-center justify-end gap-1">
+                        
+                        <!-- Control Individual de Accesos -->
+                        <div class="flex items-center gap-1 bg-[#0a0f1d] border border-[#1f2937] p-1 rounded-lg mr-2">
+                            <button onclick='toggleIngreso("${ticket.id}", 1, ${ticket.ingreso1})' title="Toggle Ingreso Persona 1" class="px-2 py-1 rounded text-xs font-bold transition-colors ${ticket.ingreso1 ? 'bg-green-600 text-white' : 'bg-transparent text-gray-500 border border-[#1f2937] hover:bg-gray-800'}">P1</button>
+                            <button onclick='toggleIngreso("${ticket.id}", 2, ${ticket.ingreso2})' title="Toggle Ingreso Persona 2" class="px-2 py-1 rounded text-xs font-bold transition-colors ${ticket.ingreso2 ? 'bg-green-600 text-white' : 'bg-transparent text-gray-500 border border-[#1f2937] hover:bg-gray-800'}">P2</button>
+                        </div>
+
                         <button onclick='descargarTicketID("${ticket.id}")' title="Descargar Imagen JPG" class="text-blue-500 hover:text-blue-400 p-2"><i class="fa-solid fa-image"></i></button>
                         <button onclick='abrirEdicion("${ticket.id}")' title="Editar Datos" class="text-yellow-500 hover:text-yellow-400 p-2"><i class="fa-solid fa-pen-to-square"></i></button>
-                        
-                        ${ticket.estado === 'pendiente' 
-                            ? `<button onclick="marcarIngresoRapido('${ticket.id}')" title="Marcar Ingreso" class="text-green-500 hover:text-green-400 p-2"><i class="fa-solid fa-check-to-slot"></i></button>`
-                            : `<button onclick="revertirIngreso('${ticket.id}')" title="Deshacer Ingreso (Volver a Pendiente)" class="text-orange-500 hover:text-orange-400 p-2"><i class="fa-solid fa-rotate-left"></i></button>`
-                        }
-                        
                         <button onclick="eliminarTicket('${ticket.id}')" title="Eliminar" class="text-red-500 hover:text-red-400 p-2 ml-1"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
@@ -660,6 +687,26 @@
         window.descargarTicketID = function(id) {
             const ticket = ticketsData.find(t => t.id === id);
             if(ticket) exportarBoletaImagen(ticket);
+        };
+
+        // NUEVA FUNCIÓN: Toggle Ingreso Individual desde la tabla
+        window.toggleIngreso = async function(baseId, personaNum, estadoActual) {
+            try {
+                let updateData = {};
+                let nuevoEstado = !estadoActual;
+                
+                if(personaNum === 1) {
+                    updateData.ingreso1 = nuevoEstado;
+                    updateData.horaIngreso1 = nuevoEstado ? new Date().toISOString() : null;
+                } else {
+                    updateData.ingreso2 = nuevoEstado;
+                    updateData.horaIngreso2 = nuevoEstado ? new Date().toISOString() : null;
+                }
+
+                await updateDoc(doc(ticketsRef, baseId), updateData);
+            } catch(e) {
+                showModal("Error", "No se pudo actualizar la base de datos.", "error");
+            }
         };
 
         window.abrirEdicion = function(id) {
@@ -688,35 +735,28 @@
             const nuevoNom = document.getElementById('edit-nom').value.trim();
             const nuevoCel = document.getElementById('edit-cel').value.trim();
             
-            if(!nuevoNom || !nuevoCel) {
-                alert("Por favor completa los campos.");
-                return;
-            }
+            if(!nuevoNom || !nuevoCel) return alert("Por favor completa los campos.");
             
             try {
                 await updateDoc(doc(ticketsRef, id), { nombre: nuevoNom, celular: nuevoCel });
                 closeModal();
-            } catch(e) {
-                showModal("Error", "No se pudo actualizar el ticket", "error");
-            }
-        };
-
-        window.revertirIngreso = async function(id) {
-            if(!confirm(`¿Estás seguro de deshacer el ingreso de la boleta ${id}? Volverá a estar pendiente y el QR podrá ser leído nuevamente.`)) return;
-            try { 
-                await updateDoc(doc(ticketsRef, id), { estado: 'pendiente', horaIngreso: null }); 
-            } catch(e) { 
-                showModal("Error", "No se pudo revertir el estado", "error"); 
-            }
+            } catch(e) { showModal("Error", "No se pudo actualizar el ticket", "error"); }
         };
 
         function updateStats() {
-            const total = ticketsData.length;
-            const ingresados = ticketsData.filter(t => t.estado === 'ingresado').length;
-            document.getElementById('stat-total').textContent = total;
-            document.getElementById('stat-in').textContent = ingresados;
-            document.getElementById('stat-out').textContent = total - ingresados;
-            document.getElementById('stat-money').textContent = '$' + (total * PRECIO_BOLETA).toLocaleString('es-CO');
+            const totalBoletas = ticketsData.length;
+            const cuposTotales = totalBoletas * 2;
+            let cuposIngresados = 0;
+            
+            ticketsData.forEach(t => {
+                if(t.ingreso1) cuposIngresados++;
+                if(t.ingreso2) cuposIngresados++;
+            });
+
+            document.getElementById('stat-total').textContent = totalBoletas;
+            document.getElementById('stat-in').textContent = cuposIngresados;
+            document.getElementById('stat-out').textContent = cuposTotales - cuposIngresados;
+            document.getElementById('stat-money').textContent = '$' + (totalBoletas * PRECIO_BOLETA).toLocaleString('es-CO');
         }
 
         window.eliminarTicket = async function(id) {
@@ -725,12 +765,22 @@
             catch(e) { showModal("Error", "No se pudo eliminar", "error"); }
         };
 
-        window.marcarIngresoRapido = async function(id) {
-            try { await updateDoc(doc(ticketsRef, id), { estado: 'ingresado', horaIngreso: new Date().toISOString() }); } 
-            catch(e) { showModal("Error", "No se pudo marcar", "error"); }
+        window.exportToCSV = function() {
+            if(ticketsData.length === 0) return;
+            const headers = ['ID', 'Titular', 'Celular', 'Metodo Pago', 'Fecha Emision', 'P1 Ingresado', 'P2 Ingresado'];
+            const rows = ticketsData.map(t => [
+                t.id, `"${t.nombre}"`, t.celular, t.pago, t.fecha, t.ingreso1 ? 'SI' : 'NO', t.ingreso2 ? 'SI' : 'NO'
+            ]);
+            const csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n" + rows.map(e => e.join(",")).join("\n");
+            const link = document.createElement("a");
+            link.setAttribute("href", encodeURI(csvContent));
+            link.setAttribute("download", `Reporte_Tickets_${new Date().toLocaleDateString()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         };
 
-        // 5. ESCÁNER QR
+        // 5. ESCÁNER QR - DOBLE VALIDACIÓN
         function initScanner() {
             if(html5QrCode) return;
             
@@ -750,7 +800,7 @@
         }
 
         function onScanSuccess(decodedText) {
-            if(isProcessingQR) return; // Bloquea múltiples lecturas por segundo
+            if(isProcessingQR) return; // Bloquea múltiples lecturas
             isProcessingQR = true; 
             procesarValidacion(decodedText.trim().toUpperCase());
         }
@@ -766,43 +816,72 @@
             procesarValidacion(id);
         };
 
-        function procesarValidacion(ticketId) {
-            if(!ticketId.startsWith('TKT-') && ticketId.length === 6) ticketId = 'TKT-' + ticketId;
-            const ticket = ticketsData.find(t => t.id === ticketId);
+        function procesarValidacion(scannedText) {
+            // Asegurar formato TKT-XXXXXX-1
+            if(!scannedText.startsWith('TKT-')) scannedText = 'TKT-' + scannedText;
             
-            if (!ticket) {
-                showModal("Ticket Inválido", `El código <b>${ticketId}</b> no existe.`, "error", true);
+            const parts = scannedText.split('-');
+            if(parts.length < 3) {
+                showModal("Código Inválido", "El QR escaneado no pertenece a ninguna de las dos personas de la boleta.", "error", true);
                 playSound('error');
                 return;
             }
 
+            const baseId = `${parts[0]}-${parts[1]}`;
+            const personaNum = parts[2]; // '1' o '2'
+
+            if(personaNum !== '1' && personaNum !== '2') {
+                showModal("Código Corrupto", "El identificador de persona es inválido.", "error", true);
+                playSound('error');
+                return;
+            }
+
+            const ticket = ticketsData.find(t => t.id === baseId);
+            
+            if (!ticket) {
+                showModal("Ticket Inválido", `La boleta <b>${baseId}</b> no existe.`, "error", true);
+                playSound('error');
+                return;
+            }
+
+            const yaIngresado = personaNum === '1' ? ticket.ingreso1 : ticket.ingreso2;
+
             const detailsHtml = `
                 <p><span class="text-gray-500 font-bold">Titular:</span> ${ticket.nombre}</p>
-                <p><span class="text-gray-500 font-bold">ID:</span> ${ticket.id}</p>
-                <p><span class="text-gray-500 font-bold">Pago:</span> ${ticket.pago}</p>
+                <p><span class="text-gray-500 font-bold">Boleta Base:</span> ${ticket.id}</p>
+                <p><span class="text-[#eab308] font-bold border border-[#eab308] rounded px-2 py-0.5 mt-2 inline-block">ENTRADA PARA LA PERSONA ${personaNum}</span></p>
             `;
 
-            if (ticket.estado === 'ingresado') {
-                showModal("¡Ya Ingresado!", `Este ticket ya fue registrado.`, "warning", true, detailsHtml);
+            if (yaIngresado) {
+                showModal("¡Ya Ingresado!", `La Persona ${personaNum} de este ticket ya ingresó previamente.`, "warning", true, detailsHtml);
                 playSound('error');
             } else {
-                showModal("Acceso Permitido", "El ticket es válido y está pendiente.", "success", true, detailsHtml, 
-                    [{ text: "Marcar Ingreso", color: "bg-green-600 hover:bg-green-500", action: () => confirmarIngreso(ticket.id) }]
+                showModal("Acceso Permitido", `La entrada de la Persona ${personaNum} es válida y está pendiente.`, "success", true, detailsHtml, 
+                    [{ text: "Confirmar Ingreso", color: "bg-green-600 hover:bg-green-500", action: () => confirmarIngreso(baseId, personaNum) }]
                 );
                 playSound('success');
             }
         }
 
-        // CORRECCIÓN: Evitar choque de ventanas
-        window.confirmarIngreso = async function(id) {
+        // CORRECCIÓN: Confirmación que no bloquea la cámara
+        window.confirmarIngreso = async function(baseId, personaNum) {
             try {
-                // Se reemplaza el contenido sin cerrar la ventana para evitar bugs visuales
+                // UI Transición en el mismo modal
                 document.getElementById('modal-title').textContent = "Procesando...";
                 document.getElementById('modal-actions').innerHTML = '<i class="fa-solid fa-spinner fa-spin text-3xl text-white py-4"></i>';
                 
-                await updateDoc(doc(ticketsRef, id), { estado: 'ingresado', horaIngreso: new Date().toISOString() });
+                let updateData = {};
+                if(personaNum === '1') {
+                    updateData.ingreso1 = true;
+                    updateData.horaIngreso1 = new Date().toISOString();
+                } else {
+                    updateData.ingreso2 = true;
+                    updateData.horaIngreso2 = new Date().toISOString();
+                }
+
+                await updateDoc(doc(ticketsRef, baseId), updateData);
                 
-                showModal("Ingreso Registrado", `El ticket ${id} ha sido marcado como ingresado.`, "success", true);
+                showModal("Ingreso Registrado", `La entrada de la Persona ${personaNum} fue aceptada.`, "success", true);
             } catch(e) { 
                 showModal("Error", "No se pudo conectar a la base de datos", "error", true); 
             }
@@ -860,8 +939,7 @@
             modalContent.classList.add('scale-95');
             setTimeout(() => {
                 modal.classList.add('hidden');
-                // IMPORTANTE: Liberar la cámara al cerrar la ventana. 
-                // Le damos medio segundo para que el usuario quite el QR del frente de la cámara
+                // Liberar escáner medio segundo después de que desaparezca el modal
                 setTimeout(() => { isProcessingQR = false; }, 500);
             }, 150);
         };
