@@ -16,10 +16,10 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Librerías -->
+    <!-- Librerías: Se eliminó html2pdf y se usa html2canvas para descargar JPG -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <!-- Estilos Personalizados -->
     <style>
@@ -54,12 +54,12 @@
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Diseño exacto del ticket para impresión */
+        /* Diseño de Boleta Unificado para Imagen JPG */
         .ticket-design {
-            background-color: #050505; /* Fondo ultra oscuro */
-            border: 4px solid #eab308; /* Borde dorado */
+            background-color: #050505; 
+            border: 4px solid #eab308; 
             border-radius: 16px;
-            width: 380px;
+            width: 400px;
             color: white;
             position: relative;
             overflow: hidden;
@@ -67,37 +67,19 @@
             background-image: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
         }
 
-        /* FIX: Contenedor en Posición Fixed evita deformación del Viewport y divisiones de página */
+        /* Contenedor fijo invisible para capturar la imagen sin fallos de scroll */
         #pdf-export-wrapper {
             position: fixed;
             top: 0;
-            left: 0;
+            left: -9999px;
             opacity: 0;
             pointer-events: none;
             z-index: -9999;
         }
 
-        /* FIX para el escáner HTML5-QRCode */
-        #reader button {
-            background-color: #1f2937 !important;
-            color: white !important;
-            border: 1px solid #374151 !important;
-            padding: 8px 16px !important;
-            border-radius: 8px !important;
-            margin-top: 10px !important;
-            font-weight: bold !important;
-            cursor: pointer !important;
-        }
-        #reader select {
-            background-color: #0a0f1d !important;
-            color: white !important;
-            border: 1px solid #374151 !important;
-            padding: 8px !important;
-            border-radius: 8px !important;
-            margin-bottom: 10px !important;
-            width: 100% !important;
-        }
-        #reader a { display: none !important; }
+        /* Fix Lector QR UI */
+        #reader { border: none !important; }
+        #reader video { border-radius: 12px; object-fit: cover; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -264,8 +246,9 @@
                             </div>
                         </div>
 
+                        <!-- BOTÓN MODIFICADO PARA JPG -->
                         <button id="btn-descargar-actual" class="mt-6 bg-[#1f2937] hover:bg-gray-700 text-white border border-[#374151] font-bold py-3 px-6 rounded-lg transition-colors flex items-center gap-2 text-sm shadow-xl w-full max-w-[380px] justify-center">
-                            <i class="fa-solid fa-download"></i> Descargar Boleta PDF
+                            <i class="fa-solid fa-image"></i> Descargar Boleta JPG
                         </button>
                     </div>
                 </div>
@@ -331,10 +314,12 @@
         <section id="validar" class="tab-content max-w-md mx-auto">
             <div class="bg-[#111827] border border-[#1f2937] rounded-2xl p-5 shadow-xl text-center">
                 <h2 class="text-lg font-bold text-white mb-2"><i class="fa-solid fa-camera text-[#eab308] mr-2"></i> Escáner de Acceso</h2>
-                <p class="text-gray-400 text-xs mb-5">Apunta la cámara al QR de la boleta o ingresa el ID manual.</p>
+                <p class="text-gray-400 text-xs mb-5">Apunta la cámara trasera al QR de la boleta o ingresa el ID manual.</p>
 
-                <!-- Lector QR Ajustado -->
-                <div id="reader" class="w-full rounded-xl overflow-hidden border-2 border-[#1f2937] bg-[#0a0f1d] mb-5 min-h-[250px] p-2"></div>
+                <!-- Lector QR -->
+                <div id="reader" class="w-full rounded-xl overflow-hidden border-2 border-[#1f2937] bg-[#0a0f1d] mb-5 min-h-[250px] flex items-center justify-center relative">
+                    <div id="cam-loading" class="absolute text-gray-500 text-sm"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Activando Cámara Trasera...</div>
+                </div>
 
                 <div class="relative w-full">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -350,7 +335,7 @@
 
     </main>
 
-    <!-- CONTENEDOR OCULTO PARA EXPORTAR PDF -->
+    <!-- CONTENEDOR OCULTO PARA EXPORTAR IMAGEN -->
     <div id="pdf-export-wrapper">
         <div id="pdf-ticket-template" class="ticket-design p-8 flex flex-col items-center text-center">
             <!-- Header / Logo -->
@@ -399,7 +384,7 @@
             </div>
 
             <!-- QR -->
-            <div class="bg-white p-3 rounded-xl mb-6 shadow-lg">
+            <div class="bg-white p-3 rounded-xl mb-6 shadow-lg inline-block">
                 <div id="ex-qrcode" class="w-36 h-36"></div>
             </div>
 
@@ -431,7 +416,6 @@
         import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Configuración Firebase
         let firebaseConfig;
         let appId;
         
@@ -457,7 +441,8 @@
         let ticketsRef = null;
 
         let ticketsData = [];
-        let html5QrcodeScanner = null;
+        let html5QrCode = null; // Instancia directa para control de cámara trasera
+        let isProcessingQR = false; // Candado para evitar múltiples lecturas por segundo
         const PRECIO_BOLETA = 20000;
 
         const statusEl = document.getElementById('cloud-status');
@@ -469,7 +454,7 @@
 
         document.getElementById('v-fecha').valueAsDate = new Date();
 
-        // 1. INICIALIZACIÓN Y AUTH
+        // 1. INICIALIZACIÓN
         async function initApp() {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -525,7 +510,7 @@
             statusIcon.className = isOnline ? "fa-solid fa-cloud-check" : "fa-solid fa-cloud-xmark";
         }
 
-        // 2. NAVEGACIÓN Y CORRECCIÓN DE CÁMARA
+        // 2. NAVEGACIÓN Y CONTROL DE CÁMARA
         window.switchTab = function(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(el => {
@@ -539,13 +524,16 @@
             activeBtn.classList.add('bg-[#dc2626]', 'text-white', 'shadow-lg');
 
             if(tabId === 'validar') {
-                // FIX DE CÁMARA: El retraso asegura que el contenedor esté visible antes de iniciar
-                setTimeout(() => {
-                    if(!html5QrcodeScanner) initScanner();
-                }, 250); 
-            } else if(html5QrcodeScanner) {
-                html5QrcodeScanner.clear().catch(e => console.error(e));
-                html5QrcodeScanner = null;
+                setTimeout(() => { initScanner(); }, 250); 
+            } else {
+                // Apagar cámara si nos vamos de la pestaña Validar para ahorrar batería
+                if (html5QrCode && html5QrCode.isScanning) {
+                    html5QrCode.stop().then(() => {
+                        html5QrCode.clear();
+                        html5QrCode = null;
+                        document.getElementById('cam-loading').style.display = 'block';
+                    }).catch(e => console.error("Error al detener cámara:", e));
+                }
             }
         };
 
@@ -580,11 +568,11 @@
                 qrContainer.innerHTML = '';
                 new QRCode(qrContainer, { text: ticketId, width: 128, height: 128, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
 
-                document.getElementById('btn-descargar-actual').onclick = () => exportarPDFDesdePlantilla({id: ticketId, ...ticketData});
+                document.getElementById('btn-descargar-actual').onclick = () => exportarBoletaImagen({id: ticketId, ...ticketData});
 
                 document.getElementById('venta-form').reset();
                 document.getElementById('v-fecha').valueAsDate = new Date();
-                showModal("¡Éxito!", `Ticket ${ticketId} generado. Puedes descargar el PDF.`, "success");
+                showModal("¡Éxito!", `Ticket ${ticketId} generado. Puedes descargar la imagen JPG.`, "success");
 
             } catch (error) {
                 showModal("Error", "No se pudo guardar la boleta.", "error");
@@ -594,8 +582,10 @@
             }
         });
 
-        // FUNCIÓN DE EXPORTACIÓN PDF
-        window.exportarPDFDesdePlantilla = function(ticket) {
+        // ---------------------------------------------------------------------
+        // FIX PRINCIPAL: EXPORTACIÓN A IMAGEN JPG (Una sola foto, perfecta)
+        // ---------------------------------------------------------------------
+        window.exportarBoletaImagen = function(ticket) {
             document.getElementById('ex-nombre').textContent = ticket.nombre;
             document.getElementById('ex-celular').textContent = ticket.celular;
             document.getElementById('ex-id').textContent = ticket.id;
@@ -604,26 +594,25 @@
             exQrcode.innerHTML = '';
             new QRCode(exQrcode, { text: ticket.id, width: 144, height: 144, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
 
+            // Retraso para asegurar que el QR se pintó
             setTimeout(() => {
                 const element = document.getElementById('pdf-ticket-template');
                 
-                const opt = {
-                    margin:       0,
-                    filename:     `Boleta_${ticket.id}_${ticket.nombre.replace(/\s+/g, '_')}.pdf`,
-                    image:        { type: 'jpeg', quality: 1 },
-                    html2canvas:  { 
-                        scale: 3, 
-                        useCORS: true, 
-                        backgroundColor: '#050505',
-                        windowWidth: 800
-                    },
-                    jsPDF:        { 
-                        unit: 'mm', 
-                        format: [100, 220], 
-                        orientation: 'portrait' 
-                    }
-                };
-                html2pdf().set(opt).from(element).save();
+                // Usar html2canvas para convertir el DOM a Imagen pura
+                html2canvas(element, { 
+                    scale: 3, // Resolución Altísima (3x)
+                    backgroundColor: '#050505',
+                    useCORS: true
+                }).then(canvas => {
+                    // Convertir Canvas a JPG DataURL
+                    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                    
+                    // Disparar Descarga Automática
+                    const link = document.createElement('a');
+                    link.download = `Boleta_${ticket.id}_${ticket.nombre.replace(/\s+/g, '_')}.jpg`;
+                    link.href = imgData;
+                    link.click();
+                });
             }, 300);
         };
 
@@ -661,7 +650,8 @@
                         </span>
                     </td>
                     <td class="p-4 text-right whitespace-nowrap">
-                        <button onclick='descargarTicketID("${ticket.id}")' title="Descargar PDF" class="text-blue-500 hover:text-blue-400 p-2"><i class="fa-solid fa-download"></i></button>
+                        <!-- Icono modificado a imagen -->
+                        <button onclick='descargarTicketID("${ticket.id}")' title="Descargar Imagen JPG" class="text-blue-500 hover:text-blue-400 p-2"><i class="fa-solid fa-image"></i></button>
                         <button onclick='abrirEdicion("${ticket.id}")' title="Editar Datos" class="text-yellow-500 hover:text-yellow-400 p-2"><i class="fa-solid fa-pen-to-square"></i></button>
                         
                         ${ticket.estado === 'pendiente' 
@@ -680,7 +670,7 @@
 
         window.descargarTicketID = function(id) {
             const ticket = ticketsData.find(t => t.id === id);
-            if(ticket) exportarPDFDesdePlantilla(ticket);
+            if(ticket) exportarBoletaImagen(ticket);
         };
 
         window.abrirEdicion = function(id) {
@@ -766,25 +756,34 @@
             document.body.removeChild(link);
         };
 
-        // 5. VALIDACIÓN Y ESCÁNER (Correcciones aplicadas)
+        // ---------------------------------------------------------------------
+        // FIX PRINCIPAL: MOTOR DE CÁMARA FORZADO A LA CÁMARA TRASERA
+        // ---------------------------------------------------------------------
         function initScanner() {
-            if(html5QrcodeScanner) return;
+            if(html5QrCode) return;
             
-            // Se fuerza a intentar acceder a las cámaras del dispositivo con un aspect ratio libre
-            html5QrcodeScanner = new Html5QrcodeScanner(
-                "reader", 
-                { fps: 10, qrbox: {width: 250, height: 250} }, 
-                false
-            );
-            
-            // Se ocultan errores del renderizado inicial si el usuario no ha dado permisos todavía
-            html5QrcodeScanner.render(onScanSuccess, (error) => {
-                // Ignore silent errors while waiting for scan
+            html5QrCode = new Html5Qrcode("reader");
+            document.getElementById('cam-loading').style.display = 'none';
+
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+            // Intenta Iniciar con la Cámara Trasera Explicitamente ("environment")
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+            .catch(err => {
+                console.warn("No se pudo iniciar cámara trasera. Intentando frontal...", err);
+                // Si falla (ej. celular sin cámara trasera disponible), intenta la frontal ("user")
+                html5QrCode.start({ facingMode: "user" }, config, onScanSuccess)
+                .catch(err2 => {
+                    console.error("Error definitivo de cámara:", err2);
+                    document.getElementById('cam-loading').style.display = 'block';
+                    document.getElementById('cam-loading').innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-500"></i> No se detectó cámara disponible.';
+                });
             });
         }
 
         function onScanSuccess(decodedText) {
-            if(html5QrcodeScanner) html5QrcodeScanner.pause(true);
+            if(isProcessingQR) return; // Ignora si ya está mostrando un modal
+            isProcessingQR = true; // Cierra el candado
             procesarValidacion(decodedText.trim().toUpperCase());
         }
 
@@ -874,7 +873,6 @@
                 actionsEl.appendChild(b);
             });
 
-            modal.dataset.fromScanner = isScanner;
             modal.classList.remove('hidden');
             setTimeout(() => { modalContent.classList.remove('scale-95'); modalContent.classList.add('scale-100'); }, 10);
         }
@@ -884,7 +882,8 @@
             modalContent.classList.add('scale-95');
             setTimeout(() => {
                 modal.classList.add('hidden');
-                if(modal.dataset.fromScanner === 'true' && html5QrcodeScanner) html5QrcodeScanner.resume();
+                // Abre el candado de la cámara medio segundo después de cerrar el modal
+                setTimeout(() => { isProcessingQR = false; }, 500);
             }, 150);
         };
 
