@@ -67,12 +67,14 @@
             background-image: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
         }
 
-        /* Contenedor oculto pero renderizable para html2pdf */
+        /* FIX: Contenedor en Posición Fixed evita deformación del Viewport y divisiones de página */
         #pdf-export-wrapper {
-            position: absolute;
-            left: -9999px;
+            position: fixed;
             top: 0;
-            z-index: -100;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -9999;
         }
     </style>
 </head>
@@ -133,7 +135,7 @@
                     <form id="venta-form" class="space-y-4">
                         <div>
                             <label class="block text-[11px] font-bold text-gray-400 uppercase mb-1">Nombre Completo del Titular *</label>
-                            <input type="text" id="v-nombre" required placeholder="Ej: Nelson Romero" class="w-full bg-[#0a0f1d] border border-[#1f2937] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#eab308] transition-colors placeholder-gray-600">
+                            <input type="text" id="v-nombre" required placeholder="Ej: Pedro López" class="w-full bg-[#0a0f1d] border border-[#1f2937] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#eab308] transition-colors placeholder-gray-600">
                         </div>
 
                         <div>
@@ -325,7 +327,8 @@
 
     </main>
 
-    <!-- CONTENEDOR OCULTO PARA EXPORTAR PDF (Plantilla de máxima calidad) -->
+    <!-- CONTENEDOR OCULTO PARA EXPORTAR PDF -->
+    <!-- (Este contenedor procesa el diseño internamente para asegurar dimensiones consistentes en cualquier dispositivo) -->
     <div id="pdf-export-wrapper">
         <div id="pdf-ticket-template" class="ticket-design p-8 flex flex-col items-center text-center">
             <!-- Header / Logo -->
@@ -566,7 +569,9 @@
             }
         });
 
-        // FUNCIÓN DE EXPORTACIÓN PDF
+        // ---------------------------------------------------------------------
+        // FIX PRINCIPAL: EXPORTACIÓN A PDF FORZADA A UNA PÁGINA (TIPO BOLETA)
+        // ---------------------------------------------------------------------
         window.exportarPDFDesdePlantilla = function(ticket) {
             document.getElementById('ex-nombre').textContent = ticket.nombre;
             document.getElementById('ex-celular').textContent = ticket.celular;
@@ -578,12 +583,22 @@
 
             setTimeout(() => {
                 const element = document.getElementById('pdf-ticket-template');
+                
                 const opt = {
-                    margin:       5,
+                    margin:       0,  /* Márgenes en CERO para no apretar la altura */
                     filename:     `Boleta_${ticket.id}_${ticket.nombre.replace(/\s+/g, '_')}.pdf`,
                     image:        { type: 'jpeg', quality: 1 },
-                    html2canvas:  { scale: 3, useCORS: true, backgroundColor: '#050505' },
-                    jsPDF:        { unit: 'mm', format: 'a5', orientation: 'portrait' }
+                    html2canvas:  { 
+                        scale: 3, 
+                        useCORS: true, 
+                        backgroundColor: '#050505',
+                        windowWidth: 800 /* Ignora si la pantalla del celular es angosta */
+                    },
+                    jsPDF:        { 
+                        unit: 'mm', 
+                        format: [100, 220], /* Ancho 10cm x Alto 22cm: Garantiza caber en 1 hoja sin cortes */
+                        orientation: 'portrait' 
+                    }
                 };
                 html2pdf().set(opt).from(element).save();
             }, 300);
@@ -624,13 +639,10 @@
                     </td>
                     <td class="p-4 text-right whitespace-nowrap">
                         <button onclick='descargarTicketID("${ticket.id}")' title="Descargar PDF" class="text-blue-500 hover:text-blue-400 p-2"><i class="fa-solid fa-download"></i></button>
-                        
-                        <!-- NUEVO BOTÓN: Editar -->
                         <button onclick='abrirEdicion("${ticket.id}")' title="Editar Datos" class="text-yellow-500 hover:text-yellow-400 p-2"><i class="fa-solid fa-pen-to-square"></i></button>
                         
                         ${ticket.estado === 'pendiente' 
                             ? `<button onclick="marcarIngresoRapido('${ticket.id}')" title="Marcar Ingreso" class="text-green-500 hover:text-green-400 p-2"><i class="fa-solid fa-check-to-slot"></i></button>`
-                            // NUEVO BOTÓN: Revertir Ingreso si ya entró
                             : `<button onclick="revertirIngreso('${ticket.id}')" title="Deshacer Ingreso (Volver a Pendiente)" class="text-orange-500 hover:text-orange-400 p-2"><i class="fa-solid fa-rotate-left"></i></button>`
                         }
                         
@@ -648,7 +660,6 @@
             if(ticket) exportarPDFDesdePlantilla(ticket);
         };
 
-        // NUEVA FUNCIÓN: Abrir Formulario de Edición
         window.abrirEdicion = function(id) {
             const ticket = ticketsData.find(t => t.id === id);
             if(!ticket) return;
@@ -671,7 +682,6 @@
             ]);
         };
 
-        // NUEVA FUNCIÓN: Guardar datos editados a Firebase
         window.guardarEdicion = async function(id) {
             const nuevoNom = document.getElementById('edit-nom').value.trim();
             const nuevoCel = document.getElementById('edit-cel').value.trim();
@@ -689,7 +699,6 @@
             }
         };
 
-        // NUEVA FUNCIÓN: Revertir de "Ingresado" a "Pendiente"
         window.revertirIngreso = async function(id) {
             if(!confirm(`¿Estás seguro de deshacer el ingreso de la boleta ${id}? Volverá a estar pendiente y el QR podrá ser leído nuevamente.`)) return;
             try { 
@@ -805,7 +814,6 @@
                 modalContent.className = "bg-[#111827] border shadow-2xl rounded-2xl p-6 max-w-sm w-full text-center transform scale-100 transition-transform border-red-500/50";
                 document.getElementById('modal-title').className = "text-2xl font-black text-red-400 mb-2 uppercase tracking-tight";
             } else if (type === 'info') {
-                // Nuevo tipo visual azul para el formulario de edición
                 iconEl.innerHTML = '<i class="fa-solid fa-pen-to-square text-blue-500"></i>';
                 modalContent.className = "bg-[#111827] border shadow-2xl rounded-2xl p-6 max-w-sm w-full text-center transform scale-100 transition-transform border-blue-500/50";
                 document.getElementById('modal-title').className = "text-2xl font-black text-blue-400 mb-2 uppercase tracking-tight";
@@ -870,5 +878,3 @@
     </script>
 </body>
 </html>
-
-
