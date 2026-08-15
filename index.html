@@ -16,7 +16,7 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Librerías: Se eliminó html2pdf y se usa html2canvas para descargar JPG -->
+    <!-- Librerías: Generación de JPG y Escáner QR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -27,13 +27,6 @@
             font-family: 'Inter', system-ui, sans-serif; 
             background-color: #0a0f1d; 
             color: #f3f4f6; 
-        }
-        
-        .venezuela-text {
-            background: linear-gradient(to right, #fde047 33%, #1d4ed8 33%, #1d4ed8 66%, #dc2626 66%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 900;
         }
 
         input:-webkit-autofill,
@@ -186,16 +179,18 @@
                     <div id="ticket-preview-container" class="z-10 w-full flex flex-col items-center hidden transform scale-90 sm:scale-100 origin-top">
                         <!-- Preview Visual -->
                         <div class="ticket-design p-6 flex flex-col items-center text-center shadow-2xl shadow-yellow-900/20">
-                            <!-- Header / Logo -->
+                            
                             <img src="https://i.imgur.com/crEnZHt.png" alt="Sánchez Logo" class="w-24 h-24 object-contain mb-2 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]" crossorigin="anonymous">
                             <h2 class="text-[#eab308] font-bold text-[10px] tracking-widest uppercase mb-4 leading-tight">
                                 Sanchez's Sport Bar<br>Bolirana & Cervecería
                             </h2>
 
-                            <!-- Título Principal -->
+                            <!-- Título Principal (CORRECCIÓN HTML2CANVAS: SIN DEGRADADOS CSS, LETRAS INDIVIDUALES) -->
                             <div class="mb-3">
-                                <h1 class="text-4xl font-black uppercase tracking-tighter leading-none text-white drop-shadow-md">Fiesta</h1>
-                                <h1 class="text-4xl font-black uppercase tracking-tighter leading-none venezuela-text drop-shadow-md">Venezolana</h1>
+                                <h1 class="text-4xl font-black uppercase tracking-widest text-white drop-shadow-md mb-1">Fiesta</h1>
+                                <h1 class="text-4xl font-black uppercase tracking-tighter drop-shadow-md">
+                                    <span class="text-[#fde047]">VEN</span><span class="text-[#1d4ed8]">EZOL</span><span class="text-[#dc2626]">ANA</span>
+                                </h1>
                             </div>
 
                             <p class="text-xs font-medium italic text-gray-300 mb-5">
@@ -246,7 +241,6 @@
                             </div>
                         </div>
 
-                        <!-- BOTÓN MODIFICADO PARA JPG -->
                         <button id="btn-descargar-actual" class="mt-6 bg-[#1f2937] hover:bg-gray-700 text-white border border-[#374151] font-bold py-3 px-6 rounded-lg transition-colors flex items-center gap-2 text-sm shadow-xl w-full max-w-[380px] justify-center">
                             <i class="fa-solid fa-image"></i> Descargar Boleta JPG
                         </button>
@@ -338,30 +332,30 @@
     <!-- CONTENEDOR OCULTO PARA EXPORTAR IMAGEN -->
     <div id="pdf-export-wrapper">
         <div id="pdf-ticket-template" class="ticket-design p-8 flex flex-col items-center text-center">
-            <!-- Header / Logo -->
+            
             <img src="https://i.imgur.com/crEnZHt.png" alt="Sánchez Logo" class="w-28 h-28 object-contain mb-3 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]" crossorigin="anonymous">
             <h2 class="text-[#eab308] font-bold text-xs tracking-widest uppercase mb-6 leading-tight">
                 Sanchez's Sport Bar<br>Bolirana & Cervecería
             </h2>
 
-            <!-- Título Principal -->
+            <!-- CORRECCIÓN DE TEXTO PARA EXPORTACIÓN -->
             <div class="mb-4">
-                <h1 class="text-5xl font-black uppercase tracking-tighter leading-none text-white drop-shadow-md">Fiesta</h1>
-                <h1 class="text-5xl font-black uppercase tracking-tighter leading-none venezuela-text drop-shadow-md">Venezolana</h1>
+                <h1 class="text-5xl font-black uppercase tracking-widest text-white drop-shadow-md mb-1">Fiesta</h1>
+                <h1 class="text-5xl font-black uppercase tracking-tighter drop-shadow-md">
+                    <span class="text-[#fde047]">VEN</span><span class="text-[#1d4ed8]">EZOL</span><span class="text-[#dc2626]">ANA</span>
+                </h1>
             </div>
 
             <p class="text-sm font-medium italic text-gray-300 mb-8">
                 "Que suene nuestra tierra ¡Y que viva nuestra gente!"
             </p>
 
-            <!-- Fechas y Detalles -->
             <div class="space-y-1.5 mb-8 w-full text-center">
                 <p class="font-bold text-base text-white">Sábado 5 de Septiembre</p>
                 <p class="font-bold text-base text-white">Desde las 7:00 PM</p>
                 <p class="text-xs text-gray-400 mt-1">Cóctel de bienvenida (hasta 12 AM)</p>
             </div>
 
-            <!-- Información del Titular -->
             <div class="w-full bg-[#111827] border border-[#1f2937] rounded-xl p-5 text-left mb-8">
                 <div class="grid grid-cols-1 gap-3 text-sm">
                     <div class="flex justify-between border-b border-[#1f2937] pb-2">
@@ -383,12 +377,10 @@
                 </div>
             </div>
 
-            <!-- QR -->
             <div class="bg-white p-3 rounded-xl mb-6 shadow-lg inline-block">
                 <div id="ex-qrcode" class="w-36 h-36"></div>
             </div>
 
-            <!-- Footer -->
             <p class="text-[11px] text-gray-300 mb-4">Bar Dg 30 b Bis 7 a 66 2do y 3er piso</p>
             
             <div class="w-full border-t border-[#1f2937] pt-4 mt-2">
@@ -410,7 +402,7 @@
         </div>
     </div>
 
-    <!-- Firebase SDK & Lógica de la Aplicación -->
+    <!-- Firebase SDK & Lógica -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -441,8 +433,8 @@
         let ticketsRef = null;
 
         let ticketsData = [];
-        let html5QrCode = null; // Instancia directa para control de cámara trasera
-        let isProcessingQR = false; // Candado para evitar múltiples lecturas por segundo
+        let html5QrCode = null; 
+        let isProcessingQR = false; // Candado anti-doble-lectura
         const PRECIO_BOLETA = 20000;
 
         const statusEl = document.getElementById('cloud-status');
@@ -484,7 +476,11 @@
                 ticketsData = [];
                 snapshot.forEach((doc) => ticketsData.push({ id: doc.id, ...doc.data() }));
                 localStorage.setItem('sanchez_tickets_backup', JSON.stringify(ticketsData));
-                renderTable();
+                
+                // Asegurarnos de mantener el filtro de búsqueda actual al actualizar
+                const currentSearch = document.getElementById('search-input').value;
+                renderTable(currentSearch);
+                
                 updateStats();
                 updateConnectionStatus(true, "En Línea");
             }, (error) => {
@@ -497,7 +493,7 @@
             const backup = localStorage.getItem('sanchez_tickets_backup');
             if(backup) {
                 ticketsData = JSON.parse(backup);
-                renderTable();
+                renderTable(document.getElementById('search-input').value);
                 updateStats();
             }
         }
@@ -510,7 +506,7 @@
             statusIcon.className = isOnline ? "fa-solid fa-cloud-check" : "fa-solid fa-cloud-xmark";
         }
 
-        // 2. NAVEGACIÓN Y CONTROL DE CÁMARA
+        // 2. NAVEGACIÓN Y APAGADO DE CÁMARA
         window.switchTab = function(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(el => {
@@ -524,20 +520,23 @@
             activeBtn.classList.add('bg-[#dc2626]', 'text-white', 'shadow-lg');
 
             if(tabId === 'validar') {
+                isProcessingQR = false; // Liberamos cámara al entrar a la pestaña
                 setTimeout(() => { initScanner(); }, 250); 
             } else {
-                // Apagar cámara si nos vamos de la pestaña Validar para ahorrar batería
                 if (html5QrCode && html5QrCode.isScanning) {
                     html5QrCode.stop().then(() => {
                         html5QrCode.clear();
                         html5QrCode = null;
-                        document.getElementById('cam-loading').style.display = 'block';
-                    }).catch(e => console.error("Error al detener cámara:", e));
+                        document.getElementById('reader').innerHTML = '<div id="cam-loading" class="absolute text-gray-500 text-sm"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Activando Cámara Trasera...</div>';
+                    }).catch(e => {
+                        console.error("Error al detener cámara:", e);
+                        html5QrCode = null;
+                    });
                 }
             }
         };
 
-        // 3. VENTA Y CREACIÓN
+        // 3. VENTA Y EXPORTACIÓN A JPG
         document.getElementById('venta-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser) return showModal("Error", "No estás conectado a la base.", "error");
@@ -582,9 +581,6 @@
             }
         });
 
-        // ---------------------------------------------------------------------
-        // FIX PRINCIPAL: EXPORTACIÓN A IMAGEN JPG (Una sola foto, perfecta)
-        // ---------------------------------------------------------------------
         window.exportarBoletaImagen = function(ticket) {
             document.getElementById('ex-nombre').textContent = ticket.nombre;
             document.getElementById('ex-celular').textContent = ticket.celular;
@@ -594,20 +590,14 @@
             exQrcode.innerHTML = '';
             new QRCode(exQrcode, { text: ticket.id, width: 144, height: 144, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
 
-            // Retraso para asegurar que el QR se pintó
             setTimeout(() => {
                 const element = document.getElementById('pdf-ticket-template');
-                
-                // Usar html2canvas para convertir el DOM a Imagen pura
                 html2canvas(element, { 
-                    scale: 3, // Resolución Altísima (3x)
+                    scale: 3, 
                     backgroundColor: '#050505',
                     useCORS: true
                 }).then(canvas => {
-                    // Convertir Canvas a JPG DataURL
                     const imgData = canvas.toDataURL('image/jpeg', 0.95);
-                    
-                    // Disparar Descarga Automática
                     const link = document.createElement('a');
                     link.download = `Boleta_${ticket.id}_${ticket.nombre.replace(/\s+/g, '_')}.jpg`;
                     link.href = imgData;
@@ -650,7 +640,6 @@
                         </span>
                     </td>
                     <td class="p-4 text-right whitespace-nowrap">
-                        <!-- Icono modificado a imagen -->
                         <button onclick='descargarTicketID("${ticket.id}")' title="Descargar Imagen JPG" class="text-blue-500 hover:text-blue-400 p-2"><i class="fa-solid fa-image"></i></button>
                         <button onclick='abrirEdicion("${ticket.id}")' title="Editar Datos" class="text-yellow-500 hover:text-yellow-400 p-2"><i class="fa-solid fa-pen-to-square"></i></button>
                         
@@ -741,24 +730,7 @@
             catch(e) { showModal("Error", "No se pudo marcar", "error"); }
         };
 
-        window.exportToCSV = function() {
-            if(ticketsData.length === 0) return;
-            const headers = ['ID', 'Titular', 'Celular', 'Metodo Pago', 'Fecha Emision', 'Estado', 'Hora Ingreso'];
-            const rows = ticketsData.map(t => [
-                t.id, `"${t.nombre}"`, t.celular, t.pago, t.fecha, t.estado, t.horaIngreso ? new Date(t.horaIngreso).toLocaleString() : 'N/A'
-            ]);
-            const csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n" + rows.map(e => e.join(",")).join("\n");
-            const link = document.createElement("a");
-            link.setAttribute("href", encodeURI(csvContent));
-            link.setAttribute("download", `Reporte_Tickets_${new Date().toLocaleDateString()}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        };
-
-        // ---------------------------------------------------------------------
-        // FIX PRINCIPAL: MOTOR DE CÁMARA FORZADO A LA CÁMARA TRASERA
-        // ---------------------------------------------------------------------
+        // 5. ESCÁNER QR
         function initScanner() {
             if(html5QrCode) return;
             
@@ -767,14 +739,10 @@
 
             const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
-            // Intenta Iniciar con la Cámara Trasera Explicitamente ("environment")
             html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
             .catch(err => {
-                console.warn("No se pudo iniciar cámara trasera. Intentando frontal...", err);
-                // Si falla (ej. celular sin cámara trasera disponible), intenta la frontal ("user")
                 html5QrCode.start({ facingMode: "user" }, config, onScanSuccess)
                 .catch(err2 => {
-                    console.error("Error definitivo de cámara:", err2);
                     document.getElementById('cam-loading').style.display = 'block';
                     document.getElementById('cam-loading').innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-500"></i> No se detectó cámara disponible.';
                 });
@@ -782,8 +750,8 @@
         }
 
         function onScanSuccess(decodedText) {
-            if(isProcessingQR) return; // Ignora si ya está mostrando un modal
-            isProcessingQR = true; // Cierra el candado
+            if(isProcessingQR) return; // Bloquea múltiples lecturas por segundo
+            isProcessingQR = true; 
             procesarValidacion(decodedText.trim().toUpperCase());
         }
 
@@ -792,6 +760,9 @@
             const id = input.value.trim().toUpperCase();
             if(!id) return;
             input.value = '';
+            
+            if(isProcessingQR) return;
+            isProcessingQR = true;
             procesarValidacion(id);
         };
 
@@ -822,12 +793,19 @@
             }
         }
 
+        // CORRECCIÓN: Evitar choque de ventanas
         window.confirmarIngreso = async function(id) {
             try {
+                // Se reemplaza el contenido sin cerrar la ventana para evitar bugs visuales
+                document.getElementById('modal-title').textContent = "Procesando...";
+                document.getElementById('modal-actions').innerHTML = '<i class="fa-solid fa-spinner fa-spin text-3xl text-white py-4"></i>';
+                
                 await updateDoc(doc(ticketsRef, id), { estado: 'ingresado', horaIngreso: new Date().toISOString() });
-                closeModal();
+                
                 showModal("Ingreso Registrado", `El ticket ${id} ha sido marcado como ingresado.`, "success", true);
-            } catch(e) { showModal("Error", "No se pudo conectar a la base de datos", "error", true); }
+            } catch(e) { 
+                showModal("Error", "No se pudo conectar a la base de datos", "error", true); 
+            }
         };
 
         // 6. UI MODAL
@@ -882,7 +860,8 @@
             modalContent.classList.add('scale-95');
             setTimeout(() => {
                 modal.classList.add('hidden');
-                // Abre el candado de la cámara medio segundo después de cerrar el modal
+                // IMPORTANTE: Liberar la cámara al cerrar la ventana. 
+                // Le damos medio segundo para que el usuario quite el QR del frente de la cámara
                 setTimeout(() => { isProcessingQR = false; }, 500);
             }, 150);
         };
