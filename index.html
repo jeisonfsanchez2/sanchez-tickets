@@ -203,7 +203,7 @@
                                 <p class="text-[11px] text-gray-400">Cóctel de bienvenida (hasta 12 AM)</p>
                             </div>
 
-                            <!-- Información del Titular (PANTALLA: Estética Original Intacta) -->
+                            <!-- Información del Titular -->
                             <div class="w-full bg-[#111827] border border-[#1f2937] rounded-xl p-4 text-left mb-4">
                                 <div class="grid grid-cols-1 gap-2 text-xs">
                                     <div class="flex justify-between border-b border-[#1f2937] pb-1">
@@ -362,13 +362,11 @@
                 <p class="text-xs text-gray-400 mt-1">Cóctel de bienvenida (hasta 12 AM)</p>
             </div>
 
-            <!-- Información del Titular (CORRECCIÓN EXACTA APLICADA SÓLO AQUÍ PARA EL RECORTE) -->
             <div class="w-full bg-[#111827] border border-[#1f2937] rounded-xl p-5 text-left mb-6">
                 <div class="grid grid-cols-1 gap-3 text-sm">
                     <div class="flex justify-between border-b border-[#1f2937] pb-2">
                         <span class="text-gray-400 font-bold uppercase text-[11px]">Titular:</span>
-                        <!-- Removido 'truncate', añadido 'pt-1' y 'leading-normal' para evitar el corte superior en la imagen -->
-                        <span id="ex-nombre" class="font-bold text-white uppercase text-right pl-2 w-56 leading-normal pt-1"></span>
+                        <span id="ex-nombre" class="font-bold text-white uppercase text-right truncate pl-2 w-56"></span>
                     </div>
                     <div class="flex justify-between border-b border-[#1f2937] pb-2">
                         <span class="text-gray-400 font-bold uppercase text-[11px]">Celular:</span>
@@ -450,7 +448,7 @@
 
         let ticketsData = [];
         let html5QrCode = null; 
-        let isProcessingQR = false; 
+        let isProcessingQR = false; // Candado anti-doble-lectura
         const PRECIO_BOLETA = 20000;
 
         const statusEl = document.getElementById('cloud-status');
@@ -462,6 +460,7 @@
 
         document.getElementById('v-fecha').valueAsDate = new Date();
 
+        // 1. INICIALIZACIÓN
         async function initApp() {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -492,6 +491,7 @@
                 snapshot.forEach((doc) => ticketsData.push({ id: doc.id, ...doc.data() }));
                 localStorage.setItem('sanchez_tickets_backup', JSON.stringify(ticketsData));
                 
+                // Mantiene la búsqueda activa al redibujar
                 const currentSearch = document.getElementById('search-input').value;
                 renderTable(currentSearch);
                 
@@ -520,6 +520,7 @@
             statusIcon.className = isOnline ? "fa-solid fa-cloud-check" : "fa-solid fa-cloud-xmark";
         }
 
+        // 2. NAVEGACIÓN Y APAGADO DE CÁMARA
         window.switchTab = function(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(el => {
@@ -548,6 +549,7 @@
             }
         };
 
+        // 3. VENTA Y EXPORTACIÓN A JPG (Doble QR)
         document.getElementById('venta-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser) return showModal("Error", "No estás conectado a la base.", "error");
@@ -562,6 +564,7 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando...';
             btn.disabled = true;
 
+            // Novedad: Control Individual de Ingresos
             const ticketData = { 
                 nombre, celular, pago, fecha, 
                 ingreso1: false, ingreso2: false, 
@@ -579,6 +582,7 @@
                 document.getElementById('p-celular').textContent = celular;
                 document.getElementById('p-id').textContent = ticketId;
                 
+                // Generar los 2 QRs en pantalla
                 document.getElementById("preview-qrcode-1").innerHTML = '';
                 new QRCode(document.getElementById("preview-qrcode-1"), { text: ticketId + '-1', width: 80, height: 80, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
                 
@@ -604,6 +608,7 @@
             document.getElementById('ex-celular').textContent = ticket.celular;
             document.getElementById('ex-id').textContent = ticket.id;
 
+            // Generar los 2 QRs ocultos para captura
             document.getElementById("ex-qrcode-1").innerHTML = '';
             new QRCode(document.getElementById("ex-qrcode-1"), { text: ticket.id + '-1', width: 128, height: 128, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
 
@@ -626,6 +631,7 @@
             }, 300);
         };
 
+        // 4. DATOS, ESTADÍSTICAS Y TABLA DE CONTROL INDIVIDUAL
         function renderTable(filterText = '') {
             ticketsTbody.innerHTML = '';
             const filtered = ticketsData.filter(t => 
@@ -661,6 +667,7 @@
                     <td class="p-4">${estadoHtml}</td>
                     <td class="p-4 text-right whitespace-nowrap flex items-center justify-end gap-1">
                         
+                        <!-- Control Individual de Accesos -->
                         <div class="flex items-center gap-1 bg-[#0a0f1d] border border-[#1f2937] p-1 rounded-lg mr-2">
                             <button onclick='toggleIngreso("${ticket.id}", 1, ${ticket.ingreso1})' title="Toggle Ingreso Persona 1" class="px-2 py-1 rounded text-xs font-bold transition-colors ${ticket.ingreso1 ? 'bg-green-600 text-white' : 'bg-transparent text-gray-500 border border-[#1f2937] hover:bg-gray-800'}">P1</button>
                             <button onclick='toggleIngreso("${ticket.id}", 2, ${ticket.ingreso2})' title="Toggle Ingreso Persona 2" class="px-2 py-1 rounded text-xs font-bold transition-colors ${ticket.ingreso2 ? 'bg-green-600 text-white' : 'bg-transparent text-gray-500 border border-[#1f2937] hover:bg-gray-800'}">P2</button>
@@ -682,6 +689,7 @@
             if(ticket) exportarBoletaImagen(ticket);
         };
 
+        // NUEVA FUNCIÓN: Toggle Ingreso Individual desde la tabla
         window.toggleIngreso = async function(baseId, personaNum, estadoActual) {
             try {
                 let updateData = {};
@@ -772,6 +780,7 @@
             document.body.removeChild(link);
         };
 
+        // 5. ESCÁNER QR - DOBLE VALIDACIÓN
         function initScanner() {
             if(html5QrCode) return;
             
@@ -791,7 +800,7 @@
         }
 
         function onScanSuccess(decodedText) {
-            if(isProcessingQR) return; 
+            if(isProcessingQR) return; // Bloquea múltiples lecturas
             isProcessingQR = true; 
             procesarValidacion(decodedText.trim().toUpperCase());
         }
@@ -808,6 +817,7 @@
         };
 
         function procesarValidacion(scannedText) {
+            // Asegurar formato TKT-XXXXXX-1
             if(!scannedText.startsWith('TKT-')) scannedText = 'TKT-' + scannedText;
             
             const parts = scannedText.split('-');
@@ -818,7 +828,7 @@
             }
 
             const baseId = `${parts[0]}-${parts[1]}`;
-            const personaNum = parts[2];
+            const personaNum = parts[2]; // '1' o '2'
 
             if(personaNum !== '1' && personaNum !== '2') {
                 showModal("Código Corrupto", "El identificador de persona es inválido.", "error", true);
@@ -853,8 +863,10 @@
             }
         }
 
+        // CORRECCIÓN: Confirmación que no bloquea la cámara
         window.confirmarIngreso = async function(baseId, personaNum) {
             try {
+                // UI Transición en el mismo modal
                 document.getElementById('modal-title').textContent = "Procesando...";
                 document.getElementById('modal-actions').innerHTML = '<i class="fa-solid fa-spinner fa-spin text-3xl text-white py-4"></i>';
                 
@@ -875,6 +887,7 @@
             }
         };
 
+        // 6. UI MODAL
         const modal = document.getElementById('result-modal');
         const modalContent = document.getElementById('modal-content');
         
@@ -926,6 +939,7 @@
             modalContent.classList.add('scale-95');
             setTimeout(() => {
                 modal.classList.add('hidden');
+                // Liberar escáner medio segundo después de que desaparezca el modal
                 setTimeout(() => { isProcessingQR = false; }, 500);
             }, 150);
         };
