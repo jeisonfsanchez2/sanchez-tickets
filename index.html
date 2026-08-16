@@ -73,13 +73,6 @@
         /* Fix Lector QR UI */
         #reader { border: none !important; }
         #reader video { border-radius: 12px; object-fit: cover; }
-        
-        /* FIX para el texto cortado en html2canvas sin dañar alineación de flexbox */
-        .fix-canvas-cut {
-            padding-top: 4px;
-            margin-top: -4px;
-            display: inline-block;
-        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -210,7 +203,7 @@
                                 <p class="text-[11px] text-gray-400">Cóctel de bienvenida (hasta 12 AM)</p>
                             </div>
 
-                            <!-- Información del Titular -->
+                            <!-- Información del Titular (PANTALLA: Estética Original Intacta) -->
                             <div class="w-full bg-[#111827] border border-[#1f2937] rounded-xl p-4 text-left mb-4">
                                 <div class="grid grid-cols-1 gap-2 text-xs">
                                     <div class="flex justify-between border-b border-[#1f2937] pb-1">
@@ -369,24 +362,25 @@
                 <p class="text-xs text-gray-400 mt-1">Cóctel de bienvenida (hasta 12 AM)</p>
             </div>
 
-            <!-- Información del Titular (Alineación preservada, solución al corte aplicada con 'fix-canvas-cut') -->
+            <!-- Información del Titular (CORRECCIÓN EXACTA APLICADA SÓLO AQUÍ PARA EL RECORTE) -->
             <div class="w-full bg-[#111827] border border-[#1f2937] rounded-xl p-5 text-left mb-6">
                 <div class="grid grid-cols-1 gap-3 text-sm">
                     <div class="flex justify-between border-b border-[#1f2937] pb-2">
                         <span class="text-gray-400 font-bold uppercase text-[11px]">Titular:</span>
-                        <span id="ex-nombre" class="font-bold text-white uppercase text-right truncate pl-2 w-56 fix-canvas-cut"></span>
+                        <!-- Removido 'truncate', añadido 'pt-1' y 'leading-normal' para evitar el corte superior en la imagen -->
+                        <span id="ex-nombre" class="font-bold text-white uppercase text-right pl-2 w-56 leading-normal pt-1"></span>
                     </div>
                     <div class="flex justify-between border-b border-[#1f2937] pb-2">
                         <span class="text-gray-400 font-bold uppercase text-[11px]">Celular:</span>
-                        <span id="ex-celular" class="font-bold text-white uppercase fix-canvas-cut"></span>
+                        <span id="ex-celular" class="font-bold text-white uppercase"></span>
                     </div>
                     <div class="flex justify-between border-b border-[#1f2937] pb-2">
                         <span class="text-gray-400 font-bold uppercase text-[11px]">Entrada:</span>
-                        <span id="ex-entrada" class="font-bold text-white uppercase text-[#eab308] fix-canvas-cut">Cupo por Pareja</span>
+                        <span id="ex-entrada" class="font-bold text-white uppercase text-[#eab308]">Cupo por Pareja</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-400 font-bold uppercase text-[11px]">Código ID:</span>
-                        <span id="ex-id" class="font-mono font-bold text-white fix-canvas-cut"></span>
+                        <span id="ex-id" class="font-mono font-bold text-white"></span>
                     </div>
                 </div>
             </div>
