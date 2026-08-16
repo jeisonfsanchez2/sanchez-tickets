@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sánchez's Tickets - Control de Acceso</title>
     
-    <!-- Tipografia Moderna -->
+    <!-- Tipografía Moderna -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Bibliotecas: Geração de JPG e Leitor QR -->
+    <!-- Librerías: Generación de JPG y Escáner QR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -47,7 +47,7 @@
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Design do Bilhete Unificado para Imagem JPG */
+        /* Diseño de Boleta Unificado para Imagen JPG */
         .ticket-design {
             background-color: #050505; 
             border: 4px solid #eab308; 
@@ -60,7 +60,7 @@
             background-image: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
         }
 
-        /* Recipiente fixo invisível para capturar a imagem sem falhas de scroll */
+        /* Contenedor fijo invisible para capturar la imagen sin fallos de scroll */
         #pdf-export-wrapper {
             position: fixed;
             top: 0;
@@ -70,14 +70,21 @@
             z-index: -9999;
         }
 
-        /* Correção para UI do Leitor QR */
+        /* Fix Lector QR UI */
         #reader { border: none !important; }
         #reader video { border-radius: 12px; object-fit: cover; }
+        
+        /* FIX para el texto cortado en html2canvas sin dañar alineación de flexbox */
+        .fix-canvas-cut {
+            padding-top: 4px;
+            margin-top: -4px;
+            display: inline-block;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- CABEÇALHO REDESENHADO PARA MOBILE -->
+    <!-- HEADER REDISEÑADO PARA MÓVIL -->
     <header class="bg-[#111827] border-b border-[#1f2937] sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3">
             
@@ -111,14 +118,14 @@
         </div>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL -->
+    <!-- CONTENIDO PRINCIPAL -->
     <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
 
-        <!-- SEPARADOR 1: VENDER -->
+        <!-- PESTAÑA 1: VENDER -->
         <section id="vender" class="tab-content active">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
-                <!-- Formulário -->
+                <!-- Formulario -->
                 <div class="lg:col-span-5 bg-[#111827] border border-[#1f2937] rounded-2xl p-5 shadow-xl h-fit">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-white flex items-center gap-2">
@@ -169,7 +176,7 @@
                     </form>
                 </div>
 
-                <!-- Pré-visualização do Bilhete no Ecrã -->
+                <!-- Preview del Ticket en Pantalla -->
                 <div class="lg:col-span-7 flex flex-col items-center justify-start relative min-h-[500px] overflow-hidden p-4">
                     <div id="empty-ticket-state" class="absolute inset-0 border-2 border-dashed border-[#1f2937] rounded-2xl flex flex-col items-center justify-center text-gray-500 p-4 text-center m-4">
                         <i class="fa-solid fa-qrcode text-5xl mb-4 opacity-50"></i>
@@ -196,36 +203,36 @@
                                 "Que suene nuestra tierra ¡Y que viva nuestra gente!"
                             </p>
 
-                            <!-- Datas e Detalhes -->
+                            <!-- Fechas y Detalles -->
                             <div class="space-y-1 mb-4">
                                 <p class="font-bold text-sm text-white">Sábado 5 de Septiembre</p>
                                 <p class="font-bold text-sm text-white">Desde las 7:00 PM</p>
                                 <p class="text-[11px] text-gray-400">Cóctel de bienvenida (hasta 12 AM)</p>
                             </div>
 
-                            <!-- Informação do Titular (CORRIGIDA A LINHA DE ESCRITA E O CORTE DE TEXTO) -->
+                            <!-- Información del Titular (Estética Restaurada) -->
                             <div class="w-full bg-[#111827] border border-[#1f2937] rounded-xl p-4 text-left mb-4">
                                 <div class="grid grid-cols-1 gap-2 text-xs">
-                                    <div class="flex justify-between items-center border-b border-[#1f2937] pb-1 pt-1">
-                                        <span class="text-gray-400 font-bold uppercase text-[10px] min-w-max">Titular:</span>
-                                        <span id="p-nombre" class="font-bold text-white uppercase text-right pl-2 break-words overflow-visible leading-normal"></span>
+                                    <div class="flex justify-between border-b border-[#1f2937] pb-1">
+                                        <span class="text-gray-400 font-bold uppercase text-[10px]">Titular:</span>
+                                        <span id="p-nombre" class="font-bold text-white uppercase text-right truncate pl-2 w-48"></span>
                                     </div>
-                                    <div class="flex justify-between items-center border-b border-[#1f2937] pb-1 pt-1">
+                                    <div class="flex justify-between border-b border-[#1f2937] pb-1">
                                         <span class="text-gray-400 font-bold uppercase text-[10px]">Celular:</span>
-                                        <span id="p-celular" class="font-bold text-white uppercase leading-normal"></span>
+                                        <span id="p-celular" class="font-bold text-white uppercase"></span>
                                     </div>
-                                    <div class="flex justify-between items-center border-b border-[#1f2937] pb-1 pt-1">
+                                    <div class="flex justify-between border-b border-[#1f2937] pb-1">
                                         <span class="text-gray-400 font-bold uppercase text-[10px]">Entrada:</span>
-                                        <span id="p-entrada" class="font-bold text-white uppercase text-[#eab308] leading-normal">Cupo por Pareja</span>
+                                        <span id="p-entrada" class="font-bold text-white uppercase text-[#eab308]">Cupo por Pareja</span>
                                     </div>
-                                    <div class="flex justify-between items-center pt-1">
+                                    <div class="flex justify-between">
                                         <span class="text-gray-400 font-bold uppercase text-[10px]">Código ID:</span>
-                                        <span id="p-id" class="font-mono font-bold text-white leading-normal"></span>
+                                        <span id="p-id" class="font-mono font-bold text-white"></span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- DUPLO QR PREVIEW -->
+                            <!-- DOBLE QR PREVIEW -->
                             <div class="flex justify-center gap-4 mb-4 w-full px-2">
                                 <div class="bg-white p-2 rounded-xl flex-1 flex flex-col items-center justify-center">
                                     <div id="preview-qrcode-1" class="w-20 h-20 mb-1"></div>
@@ -237,7 +244,7 @@
                                 </div>
                             </div>
 
-                            <!-- Rodapé -->
+                            <!-- Footer -->
                             <p class="text-[10px] text-gray-300 mb-3">Bar Dg 30 b Bis 7 a 66 2do y 3er piso</p>
                             
                             <div class="w-full border-t border-[#1f2937] pt-3">
@@ -255,7 +262,7 @@
             </div>
         </section>
 
-        <!-- SEPARADOR 2: BASE DE DADOS -->
+        <!-- PESTAÑA 2: BASE DE DATOS -->
         <section id="db" class="tab-content">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
                 <div class="bg-[#111827] border border-[#1f2937] p-3 rounded-xl text-center sm:text-left">
@@ -300,7 +307,7 @@
                             </tr>
                         </thead>
                         <tbody id="tickets-tbody" class="text-sm divide-y divide-[#1f2937]">
-                            <!-- Linhas Injetadas por JS -->
+                            <!-- Filas Inyectadas por JS -->
                         </tbody>
                     </table>
                     <div id="empty-table-state" class="hidden py-10 text-center text-gray-500">
@@ -310,13 +317,13 @@
             </div>
         </section>
 
-        <!-- SEPARADOR 3: VALIDAR QR -->
+        <!-- PESTAÑA 3: VALIDAR QR -->
         <section id="validar" class="tab-content max-w-md mx-auto">
             <div class="bg-[#111827] border border-[#1f2937] rounded-2xl p-5 shadow-xl text-center">
                 <h2 class="text-lg font-bold text-white mb-2"><i class="fa-solid fa-camera text-[#eab308] mr-2"></i> Escáner de Acceso</h2>
                 <p class="text-gray-400 text-xs mb-5">Apunta la cámara trasera al QR de la persona o ingresa el ID manual.</p>
 
-                <!-- Leitor QR -->
+                <!-- Lector QR -->
                 <div id="reader" class="w-full rounded-xl overflow-hidden border-2 border-[#1f2937] bg-[#0a0f1d] mb-5 min-h-[250px] flex items-center justify-center relative">
                     <div id="cam-loading" class="absolute text-gray-500 text-sm"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Activando Cámara Trasera...</div>
                 </div>
@@ -336,7 +343,7 @@
 
     </main>
 
-    <!-- RECIPIENTE OCULTO PARA EXPORTAR IMAGEM -->
+    <!-- CONTENEDOR OCULTO PARA EXPORTAR IMAGEN -->
     <div id="pdf-export-wrapper">
         <div id="pdf-ticket-template" class="ticket-design p-8 flex flex-col items-center text-center">
             
@@ -362,30 +369,29 @@
                 <p class="text-xs text-gray-400 mt-1">Cóctel de bienvenida (hasta 12 AM)</p>
             </div>
 
-            <!-- Informação do Titular (CORRIGIDA A LINHA DE ESCRITA E O CORTE DE TEXTO) -->
+            <!-- Información del Titular (Estética Restaurada y Fix de Recorte Aplicado) -->
             <div class="w-full bg-[#111827] border border-[#1f2937] rounded-xl p-5 text-left mb-6">
                 <div class="grid grid-cols-1 gap-3 text-sm">
-                    <!-- Foram adicionados min-w-max, items-center e leading-normal para evitar que o HTML2Canvas corte as letras por cima -->
-                    <div class="flex justify-between items-center border-b border-[#1f2937] pb-2 pt-1">
-                        <span class="text-gray-400 font-bold uppercase text-[11px] min-w-max">Titular:</span>
-                        <span id="ex-nombre" class="font-bold text-white uppercase text-right pl-2 break-words overflow-visible leading-normal"></span>
+                    <div class="flex justify-between border-b border-[#1f2937] pb-2">
+                        <span class="text-gray-400 font-bold uppercase text-[11px]">Titular:</span>
+                        <span id="ex-nombre" class="font-bold text-white uppercase text-right truncate pl-2 w-56 fix-canvas-cut"></span>
                     </div>
-                    <div class="flex justify-between items-center border-b border-[#1f2937] pb-2 pt-1">
+                    <div class="flex justify-between border-b border-[#1f2937] pb-2">
                         <span class="text-gray-400 font-bold uppercase text-[11px]">Celular:</span>
-                        <span id="ex-celular" class="font-bold text-white uppercase leading-normal"></span>
+                        <span id="ex-celular" class="font-bold text-white uppercase fix-canvas-cut"></span>
                     </div>
-                    <div class="flex justify-between items-center border-b border-[#1f2937] pb-2 pt-1">
+                    <div class="flex justify-between border-b border-[#1f2937] pb-2">
                         <span class="text-gray-400 font-bold uppercase text-[11px]">Entrada:</span>
-                        <span id="ex-entrada" class="font-bold text-white uppercase text-[#eab308] leading-normal">Cupo por Pareja</span>
+                        <span id="ex-entrada" class="font-bold text-white uppercase text-[#eab308] fix-canvas-cut">Cupo por Pareja</span>
                     </div>
-                    <div class="flex justify-between items-center pt-1">
+                    <div class="flex justify-between">
                         <span class="text-gray-400 font-bold uppercase text-[11px]">Código ID:</span>
-                        <span id="ex-id" class="font-mono font-bold text-white leading-normal"></span>
+                        <span id="ex-id" class="font-mono font-bold text-white fix-canvas-cut"></span>
                     </div>
                 </div>
             </div>
 
-            <!-- DUPLO QR PARA A IMAGEM EXPORTADA -->
+            <!-- DOBLE QR PARA LA IMAGEN EXPORTADA -->
             <div class="flex justify-center gap-5 mb-5 w-full">
                 <div class="bg-white p-2 rounded-xl flex-1 flex flex-col items-center justify-center shadow-lg">
                     <div id="ex-qrcode-1" class="w-32 h-32 mb-1"></div>
@@ -450,7 +456,7 @@
 
         let ticketsData = [];
         let html5QrCode = null; 
-        let isProcessingQR = false; // Bloqueio anti-leitura-dupla
+        let isProcessingQR = false; 
         const PRECIO_BOLETA = 20000;
 
         const statusEl = document.getElementById('cloud-status');
@@ -462,7 +468,6 @@
 
         document.getElementById('v-fecha').valueAsDate = new Date();
 
-        // 1. INICIALIZAÇÃO
         async function initApp() {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -493,7 +498,6 @@
                 snapshot.forEach((doc) => ticketsData.push({ id: doc.id, ...doc.data() }));
                 localStorage.setItem('sanchez_tickets_backup', JSON.stringify(ticketsData));
                 
-                // Mantém a pesquisa ativa ao redesenhar
                 const currentSearch = document.getElementById('search-input').value;
                 renderTable(currentSearch);
                 
@@ -522,7 +526,6 @@
             statusIcon.className = isOnline ? "fa-solid fa-cloud-check" : "fa-solid fa-cloud-xmark";
         }
 
-        // 2. NAVEGAÇÃO E ENCERRAMENTO DA CÂMARA
         window.switchTab = function(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(el => {
@@ -551,7 +554,6 @@
             }
         };
 
-        // 3. VENDA E EXPORTAÇÃO PARA JPG
         document.getElementById('venta-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser) return showModal("Error", "No estás conectado a la base.", "error");
@@ -630,7 +632,6 @@
             }, 300);
         };
 
-        // 4. DADOS, ESTATÍSTICAS E TABELA DE CONTROLO INDIVIDUAL
         function renderTable(filterText = '') {
             ticketsTbody.innerHTML = '';
             const filtered = ticketsData.filter(t => 
@@ -666,7 +667,6 @@
                     <td class="p-4">${estadoHtml}</td>
                     <td class="p-4 text-right whitespace-nowrap flex items-center justify-end gap-1">
                         
-                        <!-- Controlo Individual de Acessos -->
                         <div class="flex items-center gap-1 bg-[#0a0f1d] border border-[#1f2937] p-1 rounded-lg mr-2">
                             <button onclick='toggleIngreso("${ticket.id}", 1, ${ticket.ingreso1})' title="Toggle Ingreso Persona 1" class="px-2 py-1 rounded text-xs font-bold transition-colors ${ticket.ingreso1 ? 'bg-green-600 text-white' : 'bg-transparent text-gray-500 border border-[#1f2937] hover:bg-gray-800'}">P1</button>
                             <button onclick='toggleIngreso("${ticket.id}", 2, ${ticket.ingreso2})' title="Toggle Ingreso Persona 2" class="px-2 py-1 rounded text-xs font-bold transition-colors ${ticket.ingreso2 ? 'bg-green-600 text-white' : 'bg-transparent text-gray-500 border border-[#1f2937] hover:bg-gray-800'}">P2</button>
@@ -778,7 +778,6 @@
             document.body.removeChild(link);
         };
 
-        // 5. LEITOR QR - DUPLA VALIDAÇÃO
         function initScanner() {
             if(html5QrCode) return;
             
@@ -798,7 +797,7 @@
         }
 
         function onScanSuccess(decodedText) {
-            if(isProcessingQR) return; // Bloqueia múltiplas leituras
+            if(isProcessingQR) return; 
             isProcessingQR = true; 
             procesarValidacion(decodedText.trim().toUpperCase());
         }
@@ -882,7 +881,6 @@
             }
         };
 
-        // 6. UI MODAL
         const modal = document.getElementById('result-modal');
         const modalContent = document.getElementById('modal-content');
         
@@ -961,5 +959,3 @@
     </script>
 </body>
 </html>
-
-
